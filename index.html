@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Web App</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        .search-bar {
+            padding: 10px;
+            background: #000;
+            text-align: center;
+        }
+        .search-bar input {
+            width: 80%;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+        }
+        .search-results {
+            position: absolute;
+            width: 80%;
+            background: #222;
+            max-height: 200px;
+            overflow-y: auto;
+            border-radius: 5px;
+            display: none;
+            margin-left: 10%;
+        }
+        .search-results div {
+            padding: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .search-results div:hover {
+            background: #333;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            flex: 1;
+        }
+        .sidebar {
+            width: 250px;
+            background: #000;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar h1 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 10px;
+            transition: background 0.3s;
+        }
+        .sidebar ul li:hover {
+            background: #222;
+        }
+        .sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            display: block;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1db954;
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        header:hover {
+            transform: scale(1.02);
+        }
+        .play-btn {
+            background: #fff;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .play-btn:hover {
+            background: #1ed760;
+            transform: scale(1.1);
+        }
+        #song-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: #181818;
+            border-radius: 10px;
+            text-align: center;
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search for songs...">
+        <div class="search-results" id="search-results"></div>
+    </div>
+    <div class="container">
+        <nav class="sidebar">
+            <h1>Music Web</h1>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Search</a></li>
+                <li><a href="#">Your Library</a></li>
+                <li><a href="#">Create Playlist</a></li>
+                <li><a href="#">Liked Songs</a></li>
+            </ul>
+        </nav>
+        <main class="content">
+            <header>
+                <h2 id="song-title">Select a song</h2>
+                <p id="artist-name">Artist</p>
+                <button class="play-btn" id="play-btn">▶</button>
+            </header>
+            <div id="song-info">Select a song to see details</div>
+        </main>
+    </div>
+    <script>
+        function fetchSongData(query) {
+            const searchSettings = {
+                async: true,
+                crossDomain: true,
+                url: `https://spotify23.p.rapidapi.com/search/?q=${encodeURIComponent(query)}&type=track&offset=0&limit=10`,
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': 'YOUR_RAPIDAPI_KEY',
+                    'x-rapidapi-host': 'spotify23.p.rapidapi.com'
+                }
+            };
+            
+            $.ajax(searchSettings).done(function (response) {
+                let resultsContainer = $("#search-results");
+                resultsContainer.empty();
+                if (response.tracks && response.tracks.items.length > 0) {
+                    response.tracks.items.forEach(track => {
+                        let songItem = $("<div>").text(`${track.name} - ${track.artists.map(artist => artist.name).join(", ")}`);
+                        songItem.click(() => {
+                            $("#song-title").text(track.name);
+                            $("#artist-name").text(track.artists.map(artist => artist.name).join(", "));
+                            $("#song-info").text(`Album: ${track.album.name}`);
+                            resultsContainer.hide();
+                        });
+                        resultsContainer.append(songItem);
+                    });
+                    resultsContainer.show();
+                } else {
+                    resultsContainer.hide();
+                }
+            });
+        }
+
+        $("#search-input").on("input", function() {
+            let query = $(this).val().trim();
+            if (query.length > 0) {
+                fetchSongData(query);
+            } else {
+                $("#search-results").hide();
+            }
+        });
+    </script>
+</body>
+</html>

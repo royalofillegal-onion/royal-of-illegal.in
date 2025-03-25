@@ -18,7 +18,7 @@
             background: #121212;
             color: #fff;
             min-height: 100vh;
-            padding-bottom: 100px; /* Space for audio player */
+            padding-bottom: 100px;
         }
 
         .container {
@@ -325,6 +325,16 @@
             accent-color: #1DB954;
         }
 
+        /* Error Message Styles */
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff4444;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
@@ -347,6 +357,10 @@
             #song-image {
                 width: 200px;
                 height: 200px;
+            }
+
+            .search-container {
+                margin: 20px 10px;
             }
         }
     </style>
@@ -402,7 +416,7 @@
                     <input type="range" id="volume-slider" min="0" max="100" value="100">
                 </div>
             </div>
-            <div id="youtube-player" style="height: 0; width: 0; visibility: hidden;"></div>
+            <div id="youtube-player"></div>
         </div>
     </div>
 
@@ -416,7 +430,6 @@
         let spotifyToken = 'BQCb4wKS0uRqrCnwNue4IRTxTMNI2qF2_JXYnU1GPm1sdKUiNwkM8UsdBmCe1f1LLkQ_icl-JBQ5mqt6fXXfWIEl0ZNeSCsPJhLxegVK7ASo1zaB9zbvgriw7qvyzoKqWwCJ9X2kk9U';
         let currentVideoId = null;
         let progressInterval;
-        let isPlaying = false;
 
         // Get Spotify Access Token
         async function getSpotifyToken() {
@@ -444,29 +457,27 @@
             }
         }
 
-        // Initialize YouTube Player
+        // Initialize YouTube Player with embedded player approach
         async function initializePlayer() {
             await checkYouTubeApiReady();
-            if (!player) {
-                player = new YT.Player('youtube-player', {
-                    height: '0',
-                    width: '0',
-                    playerVars: {
-                        'playsinline': 1,
-                        'controls': 0,
-                        'enablejsapi': 1,
-                        'origin': window.location.origin
-                    },
+            const playerDiv = document.getElementById('youtube-player');
+            playerDiv.innerHTML = `<iframe id="youtube-iframe" width="0" height="0" frameborder="0" allow="autoplay"></iframe>`;
+            
+            return new Promise((resolve) => {
+                player = new YT.Player('youtube-iframe', {
                     events: {
-                        'onReady': onPlayerReady,
+                        'onReady': (event) => {
+                            event.target.setVolume(100);
+                            resolve(player);
+                        },
                         'onStateChange': onPlayerStateChange,
-                        'onError': onPlayerError
+                        'onError': handleYouTubeError
                     }
                 });
-            }
+            });
         }
 
-        // Search and Play Function
+        // Search and Play Function with embedded player
         async function searchAndPlay(spotifyTrack) {
             try {
                 document.getElementById('lyrics').innerText = 'Loading song...';
@@ -477,13 +488,9 @@
 
                 const searchQuery = `${spotifyTrack.name} ${spotifyTrack.artists[0].name} audio`;
                 const encodedQuery = encodeURIComponent(searchQuery);
-                
-                if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === 'YOUR_YOUTUBE_API_KEY') {
-                    throw new Error('Please set a valid YouTube API key');
-                }
 
                 const youtubeResponse = await fetch(
-                    `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${encodedQuery}&key=${YOUTUBE_API_KEY}`,
+                    `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${encodedQuery}&key=${YOUTUBE_API_KEY}&type=video`,
                     {
                         method: 'GET',
                         headers: {
@@ -493,8 +500,7 @@
                 );
 
                 if (!youtubeResponse.ok) {
-                    const errorData = await youtubeResponse.json();
-                    throw new Error(errorData.error?.message || 'YouTube API request failed');
+                    throw new Error('Failed to fetch video data');
                 }
 
                 const youtubeData = await youtubeResponse.json();
@@ -504,22 +510,21 @@
                 }
 
                 const videoId = youtubeData.items[0].id.videoId;
-
-                if (!videoId) {
-                    throw new Error('Invalid audio ID received');
-                }
-
+                
                 // Update UI
                 updatePlayerUI(spotifyTrack);
 
-                // Load and play audio
-                await loadVideo(videoId);
+                // Update iframe src with embedded player URL
+                const iframe = document.getElementById('youtube-iframe');
+                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}&autoplay=1`;
                 currentVideoId = videoId;
+
+                // Start progress tracking
+                startProgressUpdate();
 
             } catch (error) {
                 console.error('Error in searchAndPlay:', error);
                 handlePlaybackError(error);
-                tryNextVideo(spotifyTrack);
             }
         }
 
@@ -528,27 +533,43 @@
             document.getElementById('artist-name').innerText = track.artists.map(artist => artist.name).join(', ');
             document.getElementById('song-image').src = track.album.images[0].url;
             document.getElementById('player-container').style.display = 'block';
+            document.getElementById('play-pause-btn').innerHTML = '<i class="fas fa-pause"></i>';
         }
 
-        async function loadVideo(videoId) {
-            return new Promise((resolve, reject) => {
-                try {
-                    if (!player || !player.loadVideoById) {
-                        reject(new Error('Player not initialized'));
-                        return;
-                    }
+        function handleYouTubeError(event) {
+            let errorMessage = 'An error occurred while playing the song.';
+            
+            switch(event.data) {
+                case 2:
+                    errorMessage = 'Invalid video ID. Please try another song.';
+                    break;
+                case 5:
+                    errorMessage = 'HTML5 player error. Please refresh the page.';
+                    break;
+                case 100:
+                    errorMessage = 'Video not found. Please try another song.';
+                    break;
+                case 101:
+                case 150:
+                    errorMessage = 'Video playback not allowed. Please try another song.';
+                    break;
+            }
+            
+            document.getElementById('lyrics').innerText = errorMessage;
+            document.getElementById('play-pause-btn').innerHTML = '<i class="fas fa-play"></i>';
+        }
 
-                    player.loadVideoById({
-                        videoId: videoId,
-                        startSeconds: 0,
-                        suggestedQuality: 'small'
-                    });
-
-                    resolve();
-                } catch (error) {
-                    reject(error);
-                }
-            });
+        function handlePlaybackError(error) {
+            const errorMessage = document.getElementById('lyrics');
+            if (error.message.includes('API key')) {
+                errorMessage.innerText = 'Error: Invalid YouTube API key. Please check your configuration.';
+            } else if (error.message.includes('quota')) {
+                errorMessage.innerText = 'Error: YouTube API quota exceeded. Please try again later.';
+            } else if (error.message.includes('fetch')) {
+                errorMessage.innerText = 'Error: Unable to connect to YouTube. Please check your internet connection.';
+            } else {
+                errorMessage.innerText = `Cannot play this song. ${error.message}`;
+            }
         }
 
         function togglePlayPause() {
@@ -590,22 +611,6 @@
             return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
         }
 
-        function handlePlaybackError(error) {
-            const errorMessage = document.getElementById('lyrics');
-            if (error.message.includes('API key')) {
-                errorMessage.innerText = 'Error: Invalid YouTube API key. Please check your configuration.';
-            } else if (error.message.includes('quota')) {
-                errorMessage.innerText = 'Error: YouTube API quota exceeded. Please try again later.';
-            } else {
-                errorMessage.innerText = `Cannot play this song. ${error.message}. Trying alternative source...`;
-            }
-        }
-
-        function onPlayerReady(event) {
-            const volumeSlider = document.getElementById('volume-slider');
-            event.target.setVolume(volumeSlider.value);
-        }
-
         function onPlayerStateChange(event) {
             const playPauseBtn = document.getElementById('play-pause-btn');
             const lyricsElement = document.getElementById('lyrics');
@@ -630,11 +635,6 @@
                     lyricsElement.innerText = 'Loading...';
                     break;
             }
-        }
-
-        function onPlayerError(event) {
-            console.error('YouTube Player Error:', event.data);
-            handlePlaybackError(new Error('Playback error occurred'));
         }
 
         // UI Functions

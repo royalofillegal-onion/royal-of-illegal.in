@@ -320,6 +320,7 @@
         let spotifyToken = 'BQCb4wKS0uRqrCnwNue4IRTxTMNI2qF2_JXYnU1GPm1sdKUiNwkM8UsdBmCe1f1LLkQ_icl-JBQ5mqt6fXXfWIEl0ZNeSCsPJhLxegVK7ASo1zaB9zbvgriw7qvyzoKqWwCJ9X2kk9U';
         let player;
         let minimized = false;
+        let progressInterval = null;
 
         // Get Spotify Access Token
         async function getSpotifyToken() {
@@ -340,8 +341,8 @@
         }
 
         // Initialize YouTube Player
-        function onYouTubeIframeAPIReady() {
-            try {
+        function initializePlayer() {
+            if (!player) {
                 player = new YT.Player('youtube-player', {
                     height: '200',
                     width: '300',
@@ -349,7 +350,9 @@
                     playerVars: {
                         'playsinline': 1,
                         'controls': 1,
-                        'autoplay': 1
+                        'autoplay': 1,
+                        'enablejsapi': 1,
+                        'origin': window.location.origin
                     },
                     events: {
                         'onReady': onPlayerReady,
@@ -357,19 +360,36 @@
                         'onError': onPlayerError
                     }
                 });
-            } catch (error) {
-                console.error('Error initializing YouTube player:', error);
             }
+        }
+
+        function onYouTubeIframeAPIReady() {
+            initializePlayer();
         }
 
         function onPlayerReady(event) {
             console.log('Player ready');
+            if (player && player.setVolume) {
+                player.setVolume(50);
+            }
         }
 
         function onPlayerStateChange(event) {
-            if (event.data == YT.PlayerState.PLAYING) {
-                document.getElementById('player-container').style.display = 'block';
-                updateProgressBar();
+            switch(event.data) {
+                case YT.PlayerState.PLAYING:
+                    document.getElementById('player-container').style.display = 'block';
+                    document.getElementById('lyrics').innerText = 'Now playing...';
+                    updateProgressBar();
+                    break;
+                case YT.PlayerState.ENDED:
+                    document.getElementById('lyrics').innerText = 'Song ended. Search for another song to play.';
+                    break;
+                case YT.PlayerState.PAUSED:
+                    document.getElementById('lyrics').innerText = 'Paused. Click play to continue.';
+                    break;
+                case YT.PlayerState.BUFFERING:
+                    document.getElementById('lyrics').innerText = 'Loading...';
+                    break;
             }
         }
 
@@ -377,42 +397,114 @@
             console.error('Player error:', event.data);
             let errorMessage = 'An error occurred while playing the video.';
             switch (event.data) {
-                case 2: errorMessage = 'Invalid video ID'; break;
-                case 5: errorMessage = 'HTML5 player error'; break;
-                case 100: errorMessage = 'Video not found'; break;
+                case 2:
+                    errorMessage = 'Invalid video ID. Please try another song.';
+                    break;
+                case 5:
+                    errorMessage = 'HTML5 player error. Please refresh the page.';
+                    break;
+                case 100:
+                    errorMessage = 'Video not found. Please try another song.';
+                    break;
                 case 101:
-                case 150: errorMessage = 'Video playback not allowed'; break;
+                case 150:
+                    errorMessage = 'Video playback not allowed. Please try another song.';
+                    break;
             }
-            alert(errorMessage);
+            document.getElementById('lyrics').innerText = errorMessage;
         }
 
-        // Search and play function
         async function searchAndPlay(spotifyTrack) {
             try {
-                const searchQuery = `${spotifyTrack.name} ${spotifyTrack.artists[0].name} official audio`;
-                const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&videoCategoryId=10&key=${YOUTUBE_API_KEY}`);
+                document.getElementById('lyrics').innerText = 'Loading song...';
                 
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const searchQuery = `${spotifyTrack.name} ${spotifyTrack.artists[0].name} audio`;
+                const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&maxResults=5&key=${YOUTUBE_API_KEY}`);
+                
+                if (!response.ok) {
+                    throw new Error(`YouTube API error: ${response.status}`);
+                }
                 
                 const data = await response.json();
                 
-                if (data.items && data.items.length > 0) {
-                    const videoId = data.items[0].id.videoId;
-                    player.loadVideoById(videoId);
-                    document.getElementById('player-container').style.display = 'block';
-                    
-                    // Update UI with Spotify track info
-                    document.getElementById('song-title').innerText = spotifyTrack.name;
-                    document.getElementById('song-image').src = spotifyTrack.album.images[0].url;
-                    document.getElementById('artist-name').innerText = spotifyTrack.artists.map(artist => artist.name).join(', ');
+                if (!data.items || data.items.length === 0) {
+                    throw new Error('No matching videos found');
                 }
+
+                // Find best match
+                const video = data.items.find(item => {
+                    const title = item.snippet.title.toLowerCase();
+                    const songName = spotifyTrack.name.toLowerCase();
+                    const artistName = spotifyTrack.artists[0].name.toLowerCase();
+                    return title.includes(songName) && title.includes(artistName);
+                }) || data.items[0];
+
+                if (!video || !video.id || !video.id.videoId) {
+                    throw new Error('Invalid video data');
+                }
+
+                // Update UI
+                document.getElementById('song-title').innerText = spotifyTrack.name;
+                document.getElementById('song-image').src = spotifyTrack.album.images[0].url;
+                document.getElementById('artist-name').innerText = spotifyTrack.artists.map(artist => artist.name).join(', ');
+
+                // Play video
+                if (player && player.loadVideoById) {
+                    player.loadVideoById({
+                        videoId: video.id.videoId,
+                        startSeconds: 0,
+                        suggestedQuality: 'default'
+                    });
+                    
+                    document.getElementById('player-container').style.display = 'block';
+                } else {
+                    throw new Error('YouTube player not ready');
+                }
+
             } catch (error) {
                 console.error('Error playing track:', error);
-                alert('Error playing the song. Please try again.');
+                document.getElementById('lyrics').innerText = 'Error playing song. Please try another track.';
+                initializePlayer();
             }
         }
 
-        // Search functionality with Spotify
+        function updateProgressBar() {
+            if (progressInterval) {
+                clearInterval(progressInterval);
+            }
+            
+            progressInterval = setInterval(() => {
+                if (player && player.getCurrentTime && player.getDuration) {
+                    const currentTime = player.getCurrentTime();
+                    const duration = player.getDuration();
+                    const progress = (currentTime / duration) * 100;
+                    
+                    document.getElementById('progress').style.width = `${progress}%`;
+                    document.getElementById('current-time').innerText = formatTime(Math.floor(currentTime));
+                    document.getElementById('total-time').innerText = formatTime(Math.floor(duration));
+                }
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Search functionality
         document.getElementById('search').addEventListener('input', debounce(async (e) => {
             const query = e.target.value.trim();
             const suggestions = document.getElementById('suggestions');
@@ -422,7 +514,9 @@
                     suggestions.innerHTML = '<div class="loading">Searching...</div>';
                     suggestions.style.display = 'block';
 
-                    if (!spotifyToken) await getSpotifyToken();
+                    if (!spotifyToken) {
+                        await getSpotifyToken();
+                    }
 
                     const spotifyResponse = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`, {
                         headers: {
@@ -446,6 +540,7 @@
                                 <img class="suggestion-img" 
                                     src="${track.album.images[2]?.url || 'https://via.placeholder.com/50'}" 
                                     alt="${track.name}"
+                                    onerror="this.src='https://via.placeholder.com/50'"
                                 >
                                 <div class="suggestion-info">
                                     <div class="suggestion-title">${track.name}</div>
@@ -470,38 +565,6 @@
                 suggestions.style.display = 'none';
             }
         }, 300));
-
-        function updateProgressBar() {
-            if (player && player.getCurrentTime && player.getDuration) {
-                setInterval(() => {
-                    const currentTime = player.getCurrentTime();
-                    const duration = player.getDuration();
-                    const progress = (currentTime / duration) * 100;
-                    
-                    document.getElementById('progress').style.width = `${progress}%`;
-                    document.getElementById('current-time').innerText = formatTime(Math.floor(currentTime));
-                    document.getElementById('total-time').innerText = formatTime(Math.floor(duration));
-                }, 1000);
-            }
-        }
-
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = Math.floor(seconds % 60);
-            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
 
         function togglePlayer() {
             const container = document.getElementById('player-container');
@@ -531,9 +594,6 @@
 
         // Initialize Spotify token when page loads
         window.addEventListener('load', getSpotifyToken);
-    </script>
-</body>
-</html>
     </script>
 </body>
 </html>

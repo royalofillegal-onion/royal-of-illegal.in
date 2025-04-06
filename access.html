@@ -101,6 +101,7 @@
             outline: none;
             box-shadow: 0 0 0 2px #9333ea, 0 0 20px rgba(147, 51, 234, 0.4);
             background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.02);
         }
 
         .search-bar input:active {
@@ -110,62 +111,167 @@
         }
 
         .search-results {
-            position: absolute;
-            top: calc(100% + 50px);
+            position: fixed;
+            top: 0;
             left: 0;
-            right: 0;
-            background: #282828;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-            max-height: 400px;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 18, 18, 0.95);
+            z-index: 1000;
             overflow-y: auto;
+            backdrop-filter: blur(10px);
             display: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            z-index: 1001;
+            padding-top: 70px;
         }
 
         .search-results.active {
             display: block;
-            animation: slideDown 0.3s ease;
+            animation: fadeIn 0.3s ease;
         }
 
-        @keyframes slideDown {
-            from { transform: translateY(-10px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .search-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(40, 40, 40, 0.95);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1001;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(147, 51, 234, 0.3);
+        }
+
+        .search-header h3 {
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .close-search {
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: 0 0 15px rgba(147, 51, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .close-search:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+        }
+
+        .search-results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
         }
 
         .search-result-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.2rem;
+            background: #282828;
+            border-radius: 12px;
+            padding: 1rem;
             cursor: pointer;
-            transition: background 0.3s;
-            gap: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 1/1.5;
         }
 
         .search-result-item:hover {
-            background: #383838;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(147, 51, 234, 0.3);
         }
 
         .search-result-item img {
-            width: 50px;
-            height: 50px;
-            border-radius: 4px;
+            width: 100%;
+            height: 70%;
             object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .search-result-item:hover img {
+            transform: scale(1.05);
         }
 
         .search-result-item div {
-            flex: 1;
+            width: 100%;
+            padding: 0.5rem;
         }
 
         .search-result-item div div:first-child {
             font-size: 1rem;
-            margin-bottom: 0.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: white;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .search-result-item div div:last-child {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #b3b3b3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-result-item .play-button-overlay {
+            position: absolute;
+            right: 1rem;
+            bottom: 1rem;
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+        }
+
+        .search-result-item:hover .play-button-overlay {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .search-result-item .play-button-overlay i {
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-result-item:hover .play-button-overlay i {
+            transform: scale(1.2);
         }
 
         .logout-btn {
@@ -1230,7 +1336,7 @@
 
         .mobile-view-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 1.5rem;
             padding: 1.5rem;
             margin-top: 1rem;
@@ -1241,25 +1347,66 @@
             max-width: 100%;
             height: auto;
             margin: 0;
-            padding: 0.8rem;
+            padding: 1rem;
+            background: #282828;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-view .song-slide:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(147, 51, 234, 0.3);
         }
 
         .mobile-view .song-slide img {
-            height: 140px;
-            margin-bottom: 0.8rem;
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .mobile-view .song-info-container {
             padding: 0.5rem;
+            text-align: center;
         }
 
         .mobile-view .song-title {
-            font-size: 0.9rem;
-            margin-bottom: 0.2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .mobile-view .song-artist {
             font-size: 0.8rem;
+            color: #b3b3b3;
+        }
+
+        .mobile-view .play-button-overlay {
+            position: absolute;
+            right: 1rem;
+            bottom: 1rem;
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+        }
+
+        .mobile-view .song-slide:hover .play-button-overlay {
+            opacity: 1;
+            transform: scale(1.1);
         }
 
         @keyframes fadeIn {
@@ -1771,14 +1918,30 @@
                     return;
                 }
 
-                const results = songDatabase.searchSongs(query);
+                const results = allSongs.filter(song => 
+                    song.title.toLowerCase().includes(query) ||
+                    song.artist.toLowerCase().includes(query)
+                );
+
                 displaySearchResults(results);
             });
 
             function displaySearchResults(results) {
-                searchResults.innerHTML = '';
+                const searchResults = document.getElementById('search-results');
+                searchResults.innerHTML = `
+                    <div class="search-header">
+                        <h3>Search Results</h3>
+                        <button class="close-search">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="search-results-grid"></div>
+                `;
+
+                const grid = searchResults.querySelector('.search-results-grid');
+                
                 if (results.length === 0) {
-                    searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
+                    grid.innerHTML = '<div class="search-result-item" style="grid-column: 1 / -1; text-align: center;">No results found</div>';
                 } else {
                     results.forEach(song => {
                         const resultItem = document.createElement('div');
@@ -1787,7 +1950,7 @@
                             <img src="${song.cover}" alt="${song.title}">
                             <div>
                                 <div>${song.title}</div>
-                                <div style="font-size: 0.8rem; color: #b3b3b3;">${song.artist}</div>
+                                <div>${song.artist}</div>
                             </div>
                         `;
                         resultItem.addEventListener('click', () => {
@@ -1799,9 +1962,17 @@
                             searchResults.classList.remove('active');
                             searchInput.value = '';
                         });
-                        searchResults.appendChild(resultItem);
+                        grid.appendChild(resultItem);
                     });
                 }
+
+                // Add close functionality
+                const closeButton = searchResults.querySelector('.close-search');
+                closeButton.addEventListener('click', () => {
+                    searchResults.classList.remove('active');
+                    searchInput.value = '';
+                });
+
                 searchResults.classList.add('active');
             }
 

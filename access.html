@@ -217,11 +217,11 @@
         }
 
         .playlist-section {
+            position: relative;
             margin-bottom: 3rem;
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.5s ease forwards;
-            position: relative;
         }
 
         .playlist-section h2 {
@@ -1140,7 +1140,7 @@
 
         /* Add See More Button Styles */
         .see-more-btn {
-            display: none; /* Hide by default */
+            display: block; /* Changed from none to block */
             position: absolute;
             right: 1rem;
             top: 2.5rem;
@@ -1153,6 +1153,7 @@
             transition: all 0.3s ease;
             font-size: 0.8rem;
             box-shadow: 0 0 15px rgba(147, 51, 234, 0.3);
+            z-index: 1;
         }
 
         .see-more-btn:hover {
@@ -1166,7 +1167,6 @@
 
         /* Mobile View Styles for See More */
         .mobile-view-overlay {
-            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -1176,16 +1176,12 @@
             z-index: 1000;
             overflow-y: auto;
             backdrop-filter: blur(10px);
-        }
-
-        .mobile-view-overlay.active {
-            display: block;
             animation: fadeIn 0.3s ease;
         }
 
         .mobile-view-container {
             padding: 1rem;
-            margin-top: 70px; /* Space for header */
+            margin-top: 70px;
         }
 
         .mobile-view-header {
@@ -1956,43 +1952,37 @@
                     const category = section.querySelector('.slider-container').getAttribute('data-category');
                     const sectionTitle = section.querySelector('h2').textContent;
                     
-                    // Create mobile view overlay if it doesn't exist
-                    let mobileView = document.querySelector('.mobile-view-overlay');
-                    if (!mobileView) {
-                        mobileView = document.createElement('div');
-                        mobileView.className = 'mobile-view-overlay';
-                        
-                        // Create container for the content
-                        const container = document.createElement('div');
-                        container.className = 'mobile-view-container';
-                        
-                        // Add header with title and close button
-                        const header = document.createElement('div');
-                        header.className = 'mobile-view-header';
-                        header.innerHTML = `
-                            <h3>${sectionTitle}</h3>
-                            <button class="close-mobile-view">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
-                        
-                        // Create grid for songs
-                        const grid = document.createElement('div');
-                        grid.className = 'mobile-view-grid';
-                        
-                        container.appendChild(grid);
-                        mobileView.appendChild(header);
-                        mobileView.appendChild(container);
-                        document.body.appendChild(mobileView);
-                    }
+                    // Create mobile view overlay
+                    const mobileView = document.createElement('div');
+                    mobileView.className = 'mobile-view-overlay';
+                    
+                    // Create container for the content
+                    const container = document.createElement('div');
+                    container.className = 'mobile-view-container';
+                    
+                    // Add header with title and close button
+                    const header = document.createElement('div');
+                    header.className = 'mobile-view-header';
+                    header.innerHTML = `
+                        <h3>${sectionTitle}</h3>
+                        <button class="close-mobile-view">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    
+                    // Create grid for songs
+                    const grid = document.createElement('div');
+                    grid.className = 'mobile-view-grid';
+                    
+                    container.appendChild(grid);
+                    mobileView.appendChild(header);
+                    mobileView.appendChild(container);
+                    document.body.appendChild(mobileView);
 
                     // Show the overlay
                     mobileView.classList.add('active');
                     
                     // Populate the grid with songs
-                    const grid = mobileView.querySelector('.mobile-view-grid');
-                    grid.innerHTML = '';
-                    
                     const songs = songData[category];
                     songs.forEach(song => {
                         const slide = document.createElement('div');
@@ -2031,13 +2021,13 @@
                     // Add close functionality
                     const closeButton = mobileView.querySelector('.close-mobile-view');
                     closeButton.addEventListener('click', () => {
-                        mobileView.classList.remove('active');
+                        mobileView.remove();
                     });
 
                     // Close on overlay click
                     mobileView.addEventListener('click', (e) => {
                         if (e.target === mobileView) {
-                            mobileView.classList.remove('active');
+                            mobileView.remove();
                         }
                     });
                 });

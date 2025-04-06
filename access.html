@@ -152,11 +152,7 @@
             align-items: center;
             gap: 0.8rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .search-result-item:hover {
-            background: #333;
-            transform: translateX(5px);
+            width: 100%;
         }
 
         .search-result-item img {
@@ -171,6 +167,7 @@
             flex: 1;
             text-align: left;
             overflow: hidden;
+            min-width: 0; /* Add this to ensure text truncation works */
         }
 
         .search-result-item div div:first-child {
@@ -181,6 +178,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             margin-bottom: 0.2rem;
+            width: 100%;
         }
 
         .search-result-item div div:last-child {
@@ -189,6 +187,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            width: 100%;
         }
 
         .search-result-item .play-button-overlay {
@@ -1236,7 +1235,7 @@
             z-index: 1001;
             transform: translateY(0);
             transition: transform 0.3s ease;
-            padding: 0.5rem;
+            padding: 0.8rem;
             border-top: 1px solid rgba(147, 51, 234, 0.3);
             box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3);
         }
@@ -1426,15 +1425,47 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 0.5rem;
+            margin-top: 0.8rem;
+            padding: 0 1rem;
+        }
+
+        .mobile-player-controls .control-buttons button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            padding: 0.8rem;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-player-controls .control-buttons button#play-pause {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            box-shadow: 0 0 15px rgba(147, 51, 234, 0.4);
+        }
+
+        .mobile-player-controls .control-buttons button:hover {
+            transform: scale(1.1);
+        }
+
+        .mobile-player-controls .control-buttons button:active {
+            transform: scale(0.95);
         }
 
         .mobile-player-controls .progress-bar {
             width: 100%;
-            height: 3px;
+            height: 4px;
             background: #4f4f4f;
             border-radius: 2px;
-            margin: 0.5rem 0;
+            margin: 0.8rem 0;
             cursor: pointer;
         }
 
@@ -1446,13 +1477,9 @@
         }
 
         @media screen and (max-width: 768px) {
-            .search-results {
-                max-height: 40vh;
-            }
-
             .search-result-item {
-                padding: 0.6rem;
-                gap: 0.6rem;
+                padding: 0.7rem;
+                gap: 0.7rem;
             }
 
             .search-result-item img {
@@ -1461,23 +1488,26 @@
             }
 
             .mobile-player-controls {
-                padding: 0.4rem;
+                padding: 0.7rem;
             }
 
-            .mobile-player-controls .song-info img {
-                width: 35px;
-                height: 35px;
+            .mobile-player-controls .control-buttons button {
+                font-size: 1.1rem;
+                padding: 0.7rem;
+                width: 45px;
+                height: 45px;
+            }
+
+            .mobile-player-controls .control-buttons button#play-pause {
+                width: 55px;
+                height: 55px;
             }
         }
 
         @media screen and (max-width: 480px) {
-            .search-results {
-                max-height: 35vh;
-            }
-
             .search-result-item {
-                padding: 0.5rem;
-                gap: 0.5rem;
+                padding: 0.6rem;
+                gap: 0.6rem;
             }
 
             .search-result-item img {
@@ -1486,12 +1516,19 @@
             }
 
             .mobile-player-controls {
-                padding: 0.3rem;
+                padding: 0.6rem;
             }
 
-            .mobile-player-controls .song-info img {
-                width: 30px;
-                height: 30px;
+            .mobile-player-controls .control-buttons button {
+                font-size: 1rem;
+                padding: 0.6rem;
+                width: 40px;
+                height: 40px;
+            }
+
+            .mobile-player-controls .control-buttons button#play-pause {
+                width: 50px;
+                height: 50px;
             }
         }
     </style>

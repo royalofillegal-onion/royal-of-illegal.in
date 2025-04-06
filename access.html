@@ -111,80 +111,41 @@
         }
 
         .search-results {
-            position: fixed;
-            top: 0;
+            position: absolute;
+            top: 100%;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: rgba(18, 18, 18, 0.95);
+            background: rgba(40, 40, 40, 0.98);
             z-index: 1000;
             overflow-y: auto;
             backdrop-filter: blur(10px);
             display: none;
-            padding-top: 70px;
+            max-height: 60vh;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            transform: translateY(-10px);
+            opacity: 0;
+            transition: all 0.3s ease;
         }
 
         .search-results.active {
             display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .search-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(40, 40, 40, 0.95);
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1001;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(147, 51, 234, 0.3);
-        }
-
-        .search-header h3 {
-            font-size: 1.2rem;
-            background: linear-gradient(45deg, #9333ea, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 0;
-        }
-
-        .close-search {
-            background: linear-gradient(45deg, #9333ea, #22c55e);
-            border: none;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            box-shadow: 0 0 15px rgba(147, 51, 234, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .close-search:hover {
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+            transform: translateY(0);
+            opacity: 1;
         }
 
         .search-results-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            padding: 1.5rem;
-            margin-top: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
         }
 
         .search-result-item {
             background: #282828;
             border-radius: 12px;
-            padding: 1rem;
+            padding: 0.8rem;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
@@ -204,16 +165,10 @@
 
         .search-result-item img {
             width: 100%;
-            height: 70%;
+            height: 60%;
             object-fit: cover;
             border-radius: 8px;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .search-result-item:hover img {
-            transform: scale(1.05);
+            margin-bottom: 0.8rem;
         }
 
         .search-result-item div {
@@ -272,6 +227,19 @@
 
         .search-result-item:hover .play-button-overlay i {
             transform: scale(1.2);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: #b3b3b3;
+            font-size: 1.1rem;
+        }
+
+        .no-results i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #9333ea;
         }
 
         .logout-btn {
@@ -373,26 +341,15 @@
             transition: all 0.3s ease;
             margin: 0.5rem 0;
             position: relative;
+            cursor: grab;
         }
 
-        .slider-container::before,
-        .slider-container::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            width: 1rem;
-            height: 100%;
-            z-index: 1;
+        .slider-container:active {
+            cursor: grabbing;
         }
 
-        .slider-container::before {
-            left: 0;
-            background: linear-gradient(to right, #121212, transparent);
-        }
-
-        .slider-container::after {
-            right: 0;
-            background: linear-gradient(to left, #121212, transparent);
+        .slider-container::-webkit-scrollbar {
+            display: none;
         }
 
         .song-slide {
@@ -1282,7 +1239,31 @@
             z-index: 1000;
             overflow-y: auto;
             backdrop-filter: blur(10px);
-            animation: fadeIn 0.3s ease;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            padding-bottom: 80px; /* Add space for player controls */
+        }
+
+        .mobile-view-overlay.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .mobile-view-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-view-overlay.active .mobile-view-grid {
+            transform: translateY(0);
+            opacity: 1;
         }
 
         .mobile-view-container {
@@ -1334,20 +1315,12 @@
             box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
         }
 
-        .mobile-view-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            padding: 1.5rem;
-            margin-top: 1rem;
-        }
-
         .mobile-view .song-slide {
             min-width: 100%;
             max-width: 100%;
             height: auto;
             margin: 0;
-            padding: 1rem;
+            padding: 0.8rem;
             background: #282828;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -1361,11 +1334,10 @@
 
         .mobile-view .song-slide img {
             width: 100%;
-            height: 150px;
+            height: 120px;
             object-fit: cover;
             border-radius: 8px;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 0.8rem;
         }
 
         .mobile-view .song-info-container {
@@ -1374,12 +1346,9 @@
         }
 
         .mobile-view .song-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: bold;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(45deg, #9333ea, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.3rem;
         }
 
         .mobile-view .song-artist {
@@ -1911,6 +1880,10 @@
             const searchInput = document.getElementById('search-input');
             const searchResults = document.getElementById('search-results');
 
+            searchInput.addEventListener('focus', () => {
+                searchResults.classList.add('active');
+            });
+
             searchInput.addEventListener('input', (e) => {
                 const query = e.target.value.toLowerCase();
                 if (query.length < 2) {
@@ -1929,19 +1902,18 @@
             function displaySearchResults(results) {
                 const searchResults = document.getElementById('search-results');
                 searchResults.innerHTML = `
-                    <div class="search-header">
-                        <h3>Search Results</h3>
-                        <button class="close-search">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
                     <div class="search-results-grid"></div>
                 `;
 
                 const grid = searchResults.querySelector('.search-results-grid');
                 
                 if (results.length === 0) {
-                    grid.innerHTML = '<div class="search-result-item" style="grid-column: 1 / -1; text-align: center;">No results found</div>';
+                    grid.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <p>No results found</p>
+                        </div>
+                    `;
                 } else {
                     results.forEach(song => {
                         const resultItem = document.createElement('div');
@@ -1951,6 +1923,9 @@
                             <div>
                                 <div>${song.title}</div>
                                 <div>${song.artist}</div>
+                            </div>
+                            <div class="play-button-overlay">
+                                <i class="fas fa-play"></i>
                             </div>
                         `;
                         resultItem.addEventListener('click', () => {
@@ -1966,15 +1941,14 @@
                     });
                 }
 
-                // Add close functionality
-                const closeButton = searchResults.querySelector('.close-search');
-                closeButton.addEventListener('click', () => {
-                    searchResults.classList.remove('active');
-                    searchInput.value = '';
-                });
-
                 searchResults.classList.add('active');
             }
+
+            document.addEventListener('click', (e) => {
+                if (!searchResults.contains(e.target) && !searchInput.contains(e.target)) {
+                    searchResults.classList.remove('active');
+                }
+            });
 
             function initializeSliders() {
                 const sliders = document.querySelectorAll('.slider-container');
@@ -1983,10 +1957,9 @@
                     const songs = songData[category];
                     
                     if (songs) {
-                        songs.forEach((song, index) => {
+                        songs.forEach(song => {
                             const slide = document.createElement('div');
                             slide.className = 'song-slide';
-                            slide.style.setProperty('--index', index);
                             slide.innerHTML = `
                                 <img src="${song.cover}" alt="${song.title}">
                                 <div class="song-info-container">
@@ -2018,7 +1991,117 @@
                             slider.appendChild(slide);
                         });
                     }
+
+                    // Touch and mouse events for smooth scrolling
+                    let isDown = false;
+                    let startX;
+                    let scrollLeft;
+                    let momentum = 0;
+                    let lastScrollTime = 0;
+                    let lastScrollPosition = 0;
+
+                    // Touch events
+                    slider.addEventListener('touchstart', (e) => {
+                        isDown = true;
+                        startX = e.touches[0].pageX - slider.offsetLeft;
+                        scrollLeft = slider.scrollLeft;
+                        momentum = 0;
+                        lastScrollTime = Date.now();
+                        lastScrollPosition = scrollLeft;
+                    });
+
+                    slider.addEventListener('touchmove', (e) => {
+                        if (!isDown) return;
+                        e.preventDefault();
+                        const x = e.touches[0].pageX - slider.offsetLeft;
+                        const walk = (x - startX) * 2;
+                        slider.scrollLeft = scrollLeft - walk;
+                        
+                        // Calculate momentum
+                        const currentTime = Date.now();
+                        const timeDiff = currentTime - lastScrollTime;
+                        if (timeDiff > 0) {
+                            const currentScroll = slider.scrollLeft;
+                            const scrollDiff = currentScroll - lastScrollPosition;
+                            momentum = scrollDiff / timeDiff;
+                            lastScrollPosition = currentScroll;
+                            lastScrollTime = currentTime;
+                        }
+                    });
+
+                    slider.addEventListener('touchend', () => {
+                        isDown = false;
+                        if (Math.abs(momentum) > 0.1) {
+                            const targetScroll = slider.scrollLeft + (momentum * 100);
+                            smoothScrollTo(slider, targetScroll, 300);
+                        }
+                    });
+
+                    // Mouse events
+                    slider.addEventListener('mousedown', (e) => {
+                        isDown = true;
+                        startX = e.pageX - slider.offsetLeft;
+                        scrollLeft = slider.scrollLeft;
+                        momentum = 0;
+                        lastScrollTime = Date.now();
+                        lastScrollPosition = scrollLeft;
+                    });
+
+                    slider.addEventListener('mousemove', (e) => {
+                        if (!isDown) return;
+                        e.preventDefault();
+                        const x = e.pageX - slider.offsetLeft;
+                        const walk = (x - startX) * 2;
+                        slider.scrollLeft = scrollLeft - walk;
+                        
+                        // Calculate momentum
+                        const currentTime = Date.now();
+                        const timeDiff = currentTime - lastScrollTime;
+                        if (timeDiff > 0) {
+                            const currentScroll = slider.scrollLeft;
+                            const scrollDiff = currentScroll - lastScrollPosition;
+                            momentum = scrollDiff / timeDiff;
+                            lastScrollPosition = currentScroll;
+                            lastScrollTime = currentTime;
+                        }
+                    });
+
+                    slider.addEventListener('mouseup', () => {
+                        isDown = false;
+                        if (Math.abs(momentum) > 0.1) {
+                            const targetScroll = slider.scrollLeft + (momentum * 100);
+                            smoothScrollTo(slider, targetScroll, 300);
+                        }
+                    });
+
+                    slider.addEventListener('mouseleave', () => {
+                        isDown = false;
+                    });
                 });
+            }
+
+            // Smooth scroll function
+            function smoothScrollTo(element, target, duration) {
+                const start = element.scrollLeft;
+                const change = target - start;
+                const startTime = performance.now();
+                
+                function animate(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    element.scrollLeft = start + (change * easeInOutCubic(progress));
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                }
+                
+                requestAnimationFrame(animate);
+            }
+
+            function easeInOutCubic(t) {
+                return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
             }
 
             function loadSong(song) {
@@ -2092,12 +2175,6 @@
                         document.getElementById('next').click();
                     }
                 });
-
-                document.addEventListener('click', (e) => {
-                    if (!searchResults.contains(e.target) && !searchInput.contains(e.target)) {
-                        searchResults.classList.remove('active');
-                    }
-                });
             }
 
             function updateProgress(e) {
@@ -2123,15 +2200,12 @@
                     const category = section.querySelector('.slider-container').getAttribute('data-category');
                     const sectionTitle = section.querySelector('h2').textContent;
                     
-                    // Create mobile view overlay
                     const mobileView = document.createElement('div');
                     mobileView.className = 'mobile-view-overlay';
                     
-                    // Create container for the content
                     const container = document.createElement('div');
                     container.className = 'mobile-view-container';
                     
-                    // Add header with title and close button
                     const header = document.createElement('div');
                     header.className = 'mobile-view-header';
                     header.innerHTML = `
@@ -2141,7 +2215,6 @@
                         </button>
                     `;
                     
-                    // Create grid for songs
                     const grid = document.createElement('div');
                     grid.className = 'mobile-view-grid';
                     
@@ -2150,14 +2223,20 @@
                     mobileView.appendChild(container);
                     document.body.appendChild(mobileView);
 
-                    // Show the overlay
-                    mobileView.classList.add('active');
+                    // Add player controls to mobile view
+                    const playerControls = document.querySelector('.player-controls').cloneNode(true);
+                    playerControls.classList.add('mobile-player-controls');
+                    mobileView.appendChild(playerControls);
+
+                    // Trigger animation
+                    requestAnimationFrame(() => {
+                        mobileView.classList.add('active');
+                    });
                     
-                    // Populate the grid with songs
                     const songs = songData[category];
                     songs.forEach(song => {
                         const slide = document.createElement('div');
-                        slide.className = 'song-slide';
+                        slide.className = 'song-slide mobile-view';
                         slide.innerHTML = `
                             <img src="${song.cover}" alt="${song.title}">
                             <div class="song-info-container">
@@ -2189,16 +2268,20 @@
                         grid.appendChild(slide);
                     });
                     
-                    // Add close functionality
                     const closeButton = mobileView.querySelector('.close-mobile-view');
                     closeButton.addEventListener('click', () => {
-                        mobileView.remove();
+                        mobileView.classList.remove('active');
+                        setTimeout(() => {
+                            mobileView.remove();
+                        }, 300);
                     });
 
-                    // Close on overlay click
                     mobileView.addEventListener('click', (e) => {
                         if (e.target === mobileView) {
-                            mobileView.remove();
+                            mobileView.classList.remove('active');
+                            setTimeout(() => {
+                                mobileView.remove();
+                            }, 300);
                         }
                     });
                 });
@@ -2206,41 +2289,6 @@
 
             initializeSliders();
             setupEventListeners();
-        });
-
-        // Add smooth scrolling to sliders
-        document.addEventListener('DOMContentLoaded', () => {
-            const sliders = document.querySelectorAll('.slider-container');
-            sliders.forEach(slider => {
-                let isDown = false;
-                let startX;
-                let scrollLeft;
-
-                slider.addEventListener('mousedown', (e) => {
-                    isDown = true;
-                    slider.style.cursor = 'grabbing';
-                    startX = e.pageX - slider.offsetLeft;
-                    scrollLeft = slider.scrollLeft;
-                });
-
-                slider.addEventListener('mouseleave', () => {
-                    isDown = false;
-                    slider.style.cursor = 'grab';
-                });
-
-                slider.addEventListener('mouseup', () => {
-                    isDown = false;
-                    slider.style.cursor = 'grab';
-                });
-
-                slider.addEventListener('mousemove', (e) => {
-                    if (!isDown) return;
-                    e.preventDefault();
-                    const x = e.pageX - slider.offsetLeft;
-                    const walk = (x - startX) * 2;
-                    slider.scrollLeft = scrollLeft - walk;
-                });
-            });
         });
 
         // Update feedback functionality

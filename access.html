@@ -1509,9 +1509,19 @@
                         <div class="error-description">
                             You don't have permission to access this page. Please make sure you're logged in with the correct credentials.
                         </div>
-                        <a href="index.html" class="home-btn">Go to Login</a>
+                        <a href="index.html" class="home-btn" id="loginRedirect">Go to Login</a>
                     </div>
                 `;
+
+                // Add click handler for the login redirect button
+                document.getElementById('loginRedirect').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Clear all storage
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    // Force redirect to login page
+                    window.location.replace("index.html");
+                });
             }
         });
 
@@ -1523,11 +1533,12 @@
             
             // Then sign out from Firebase
             signOut(auth).then(() => {
-                window.location.href = 'index.html';
+                // Force redirect to login page
+                window.location.replace("index.html");
             }).catch((error) => {
                 console.error('Error signing out:', error);
                 // Force redirect even if there's an error
-                window.location.href = 'index.html';
+                window.location.replace("index.html");
             });
         });
 

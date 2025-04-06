@@ -120,7 +120,7 @@
             overflow-y: auto;
             backdrop-filter: blur(10px);
             display: none;
-            max-height: 60vh;
+            max-height: 50vh;
             border-radius: 0 0 12px 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(147, 51, 234, 0.3);
@@ -136,57 +136,51 @@
         }
 
         .search-results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
-            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.5rem;
         }
 
         .search-result-item {
             background: #282828;
-            border-radius: 12px;
-            padding: 0.8rem;
+            border-radius: 8px;
+            padding: 0.5rem;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-            aspect-ratio: 1/1.5;
+            gap: 0.8rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .search-result-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(147, 51, 234, 0.3);
+            background: #333;
+            transform: translateX(5px);
         }
 
         .search-result-item img {
-            width: 100%;
-            height: 60%;
+            width: 50px;
+            height: 50px;
             object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 0.8rem;
+            border-radius: 4px;
+            flex-shrink: 0;
         }
 
         .search-result-item div {
-            width: 100%;
-            padding: 0.5rem;
+            flex: 1;
+            text-align: left;
+            overflow: hidden;
         }
 
         .search-result-item div div:first-child {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: bold;
-            margin-bottom: 0.5rem;
             color: white;
-            background: linear-gradient(45deg, #9333ea, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            margin-bottom: 0.2rem;
         }
 
         .search-result-item div div:last-child {
@@ -198,35 +192,7 @@
         }
 
         .search-result-item .play-button-overlay {
-            position: absolute;
-            right: 1rem;
-            bottom: 1rem;
-            width: 3rem;
-            height: 3rem;
-            background: linear-gradient(45deg, #9333ea, #22c55e);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            opacity: 0;
-            box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
-        }
-
-        .search-result-item:hover .play-button-overlay {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        .search-result-item .play-button-overlay i {
-            color: white;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .search-result-item:hover .play-button-overlay i {
-            transform: scale(1.2);
+            display: none;
         }
 
         .no-results {
@@ -1252,13 +1218,10 @@
 
         .mobile-view-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
             padding: 1rem;
             margin-top: 1rem;
-            transform: translateY(-20px);
-            opacity: 0;
-            transition: all 0.3s ease;
         }
 
         .mobile-view-overlay.active .mobile-view-grid {
@@ -1320,11 +1283,13 @@
             max-width: 100%;
             height: auto;
             margin: 0;
-            padding: 0.8rem;
+            padding: 1rem;
             background: #282828;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .mobile-view .song-slide:hover {
@@ -1334,10 +1299,16 @@
 
         .mobile-view .song-slide img {
             width: 100%;
-            height: 120px;
+            height: 150px;
             object-fit: cover;
             border-radius: 8px;
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-view .song-slide:hover img {
+            transform: scale(1.05);
         }
 
         .mobile-view .song-info-container {
@@ -1346,9 +1317,12 @@
         }
 
         .mobile-view .song-title {
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: bold;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .mobile-view .song-artist {
@@ -1378,9 +1352,60 @@
             transform: scale(1.1);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .mobile-view .play-button-overlay i {
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-view .song-slide:hover .play-button-overlay i {
+            transform: scale(1.2);
+        }
+
+        .mobile-player-controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-player-controls.active {
+            transform: translateY(0);
+        }
+
+        @media screen and (max-width: 768px) {
+            .mobile-view-grid {
+                gap: 0.8rem;
+                padding: 0.8rem;
+            }
+
+            .mobile-view .song-slide {
+                padding: 0.8rem;
+            }
+
+            .mobile-view .song-slide img {
+                height: 130px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .mobile-view-grid {
+                gap: 0.6rem;
+                padding: 0.6rem;
+            }
+
+            .mobile-view .song-slide {
+                padding: 0.6rem;
+            }
+
+            .mobile-view .song-slide img {
+                height: 120px;
+            }
         }
     </style>
 </head>
@@ -2228,6 +2253,68 @@
                     playerControls.classList.add('mobile-player-controls');
                     mobileView.appendChild(playerControls);
 
+                    // Show player controls if a song is playing
+                    if (isPlaying) {
+                        playerControls.classList.add('active');
+                    }
+
+                    // Update mobile player controls when main player updates
+                    function updateMobilePlayer() {
+                        const mobilePlayer = mobileView.querySelector('.mobile-player-controls');
+                        if (mobilePlayer) {
+                            mobilePlayer.querySelector('#current-song').textContent = document.getElementById('current-song').textContent;
+                            mobilePlayer.querySelector('#current-artist').textContent = document.getElementById('current-artist').textContent;
+                            mobilePlayer.querySelector('#current-album-art').src = document.getElementById('current-album-art').src;
+                            mobilePlayer.querySelector('.progress').style.width = document.querySelector('.progress').style.width;
+                            mobilePlayer.querySelector('#current-time').textContent = document.getElementById('current-time').textContent;
+                            mobilePlayer.querySelector('#total-time').textContent = document.getElementById('total-time').textContent;
+                            
+                            const playPauseIcon = mobilePlayer.querySelector('#play-pause i');
+                            if (isPlaying) {
+                                playPauseIcon.classList.replace('fa-play', 'fa-pause');
+                                mobilePlayer.classList.add('active');
+                            } else {
+                                playPauseIcon.classList.replace('fa-pause', 'fa-play');
+                                mobilePlayer.classList.remove('active');
+                            }
+                        }
+                    }
+
+                    // Set up event listeners for mobile player controls
+                    const mobilePlayer = mobileView.querySelector('.mobile-player-controls');
+                    if (mobilePlayer) {
+                        mobilePlayer.querySelector('#play-pause').addEventListener('click', () => {
+                            togglePlay();
+                            updateMobilePlayer();
+                        });
+
+                        mobilePlayer.querySelector('#next').addEventListener('click', () => {
+                            document.getElementById('next').click();
+                            updateMobilePlayer();
+                        });
+
+                        mobilePlayer.querySelector('#prev').addEventListener('click', () => {
+                            document.getElementById('prev').click();
+                            updateMobilePlayer();
+                        });
+
+                        mobilePlayer.querySelector('.progress-bar').addEventListener('click', (e) => {
+                            const width = e.currentTarget.clientWidth;
+                            const clickX = e.offsetX;
+                            const duration = audio.duration;
+                            audio.currentTime = (clickX / width) * duration;
+                            updateMobilePlayer();
+                        });
+
+                        mobilePlayer.querySelector('#volume').addEventListener('input', (e) => {
+                            audio.volume = e.target.value / 100;
+                            document.getElementById('volume').value = e.target.value;
+                        });
+                    }
+
+                    // Update mobile player periodically
+                    const updateInterval = setInterval(updateMobilePlayer, 1000);
+
                     // Trigger animation
                     requestAnimationFrame(() => {
                         mobileView.classList.add('active');
@@ -2253,6 +2340,7 @@
                             
                             if (currentSongTitle === song.title) {
                                 togglePlay();
+                                updateMobilePlayer();
                             } else {
                                 if (isPlaying) {
                                     audio.pause();
@@ -2262,6 +2350,7 @@
                                 audio.play();
                                 isPlaying = true;
                                 document.querySelector('#play-pause i').classList.replace('fa-play', 'fa-pause');
+                                updateMobilePlayer();
                             }
                         });
                         
@@ -2270,6 +2359,7 @@
                     
                     const closeButton = mobileView.querySelector('.close-mobile-view');
                     closeButton.addEventListener('click', () => {
+                        clearInterval(updateInterval);
                         mobileView.classList.remove('active');
                         setTimeout(() => {
                             mobileView.remove();
@@ -2278,6 +2368,7 @@
 
                     mobileView.addEventListener('click', (e) => {
                         if (e.target === mobileView) {
+                            clearInterval(updateInterval);
                             mobileView.classList.remove('active');
                             setTimeout(() => {
                                 mobileView.remove();

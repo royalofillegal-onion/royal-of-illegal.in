@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RoyalStar Music</title>
+    <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -33,9 +34,7 @@
         }
 
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+            order: 1; /* Move logo to left */
         }
 
         .logo img {
@@ -73,7 +72,8 @@
             position: relative;
             flex: 1;
             max-width: 400px;
-            margin: 0 2rem;
+            margin: 0 auto; /* Center the search bar */
+            order: 2; /* Move search bar to middle */
         }
 
         .search-bar {
@@ -327,7 +327,7 @@
         }
 
         .slider-container {
-            height: 220px;
+            height: 280px; /* Increased height to accommodate text */
             display: flex;
             gap: 1.5rem;
             padding: 1rem;
@@ -403,14 +403,14 @@
             position: relative;
             z-index: 2;
             background: transparent;
-            margin-top: 0;
+            margin-top: auto;
             transform: none;
         }
 
         .song-title {
             font-weight: bold;
             margin-bottom: 0.2rem;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             color: #ffffff;
             max-width: 100%;
             overflow: hidden;
@@ -447,8 +447,8 @@
         }
 
         .song-artist {
-            font-size: 0.7rem;
-            color: #ffffff;
+            font-size: 0.8rem;
+            color: #b3b3b3;
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -460,10 +460,6 @@
             z-index: 2;
             transition: all 0.3s ease;
             transform: translateY(0.001rem);
-            background: linear-gradient(45deg, #9333ea, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            opacity: 0.9;
         }
 
         .song-slide:hover .song-title {
@@ -1566,9 +1562,487 @@
                 height: 50px;
             }
         }
+
+        /* Add Full Screen Slider Styles */
+        .full-screen-slider {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 18, 18, 0.98);
+            z-index: 2000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .full-screen-slider.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .full-screen-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem;
+            background: rgba(40, 40, 40, 0.95);
+            z-index: 2001;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .full-screen-header h2 {
+            color: white;
+            margin: 0;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-full-screen {
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .close-full-screen:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .full-screen-content {
+            width: 100%;
+            height: 100%;
+            padding: 70px 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            display: flex;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .full-screen-slide {
+            min-width: 100%;
+            height: 100%;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .full-screen-slide img {
+            width: 80%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .full-screen-slide .song-info {
+            text-align: center;
+            color: white;
+            margin-top: 1rem;
+        }
+
+        .full-screen-slide .song-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .full-screen-slide .song-artist {
+            font-size: 1rem;
+            color: #b3b3b3;
+        }
+
+        .full-screen-controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(40, 40, 40, 0.95);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            backdrop-filter: blur(10px);
+            z-index: 2001;
+        }
+
+        .full-screen-progress {
+            width: 100%;
+            height: 4px;
+            background: #4f4f4f;
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .full-screen-progress .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #9333ea, #22c55e);
+            border-radius: 2px;
+            transition: width 0.1s ease;
+        }
+
+        .full-screen-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .full-screen-buttons button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+        }
+
+        .full-screen-buttons button:hover {
+            transform: scale(1.1);
+        }
+
+        .full-screen-buttons #full-screen-play-pause {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(147, 51, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .full-screen-slide img {
+                width: 90%;
+            }
+
+            .full-screen-slide .song-title {
+                font-size: 1.2rem;
+            }
+
+            .full-screen-slide .song-artist {
+                font-size: 0.9rem;
+            }
+
+            .full-screen-buttons {
+                gap: 1.5rem;
+            }
+
+            .full-screen-buttons button {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Full screen player styles */
+        .fullscreen-player {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a1a, #000000);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .fullscreen-player.active {
+            display: flex;
+        }
+
+        .fullscreen-player .fullscreen-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .fullscreen-player .album-art {
+            width: 300px;
+            height: 300px;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .fullscreen-player .song-info {
+            width: 100%;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+
+        .fullscreen-player .song-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        .fullscreen-player .song-artist {
+            font-size: 1.5rem;
+            color: #b3b3b3;
+            margin-bottom: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        .fullscreen-player .controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .fullscreen-player .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+        }
+
+        .fullscreen-player .control-btn:hover {
+            color: #9333ea;
+            transform: scale(1.2);
+        }
+
+        .fullscreen-player .play-pause-btn {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+        }
+
+        .fullscreen-player .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .fullscreen-player .progress-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem 0;
+        }
+
+        .fullscreen-player .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .fullscreen-player .progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+
+        .fullscreen-player .time-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            color: #b3b3b3;
+            font-size: 0.9rem;
+        }
+
+        .song-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+            overflow: visible;
+            transition: all 0.3s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .song-item {
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            overflow: hidden;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .song-item img {
+            width: 100%;
+            height: 80%;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .song-info-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            color: white;
+            text-align: center;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .song-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(147, 51, 234, 0.3);
+        }
+
+        .song-artist {
+            font-size: 0.8rem;
+            color: #b3b3b3;
+            opacity: 0.8;
+        }
+
+        /* Add logout button styles */
+        .logout-container {
+            order: 3; /* Move logout to right */
+        }
+
+        .logout-btn {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 15px rgba(147, 51, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 0 25px rgba(147, 51, 234, 0.5);
+        }
+
+        .logout-btn:active {
+            transform: scale(0.95) rotateX(10deg);
+            box-shadow: 0 0 25px rgba(147, 51, 234, 0.5);
+        }
+
+        // Add styles for currently playing song
+        .song-slide.playing {
+            transform: scale(1.1);
+            z-index: 2;
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+        }
+
+        .song-slide.playing .song-title {
+            color: #9333ea;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+    <!-- Add Full Screen Slider -->
+    <div class="full-screen-slider">
+        <div class="full-screen-header">
+            <h2>Now Playing</h2>
+            <button class="close-full-screen">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="full-screen-content"></div>
+        <div class="full-screen-controls">
+            <div class="full-screen-progress">
+                <div class="progress"></div>
+            </div>
+            <div class="full-screen-buttons">
+                <button id="full-screen-prev"><i class="fas fa-step-backward"></i></button>
+                <button id="full-screen-play-pause"><i class="fas fa-play"></i></button>
+                <button id="full-screen-next"><i class="fas fa-step-forward"></i></button>
+            </div>
+        </div>
+    </div>
+
     <!-- Add Feedback Marquee -->
     <div class="feedback-marquee" id="feedbackMarquee">
         <div class="marquee-content">
@@ -1616,7 +2090,11 @@
             </div>
             <div class="search-results" id="search-results"></div>
         </div>
-        <button class="logout-btn" id="logoutBtn">Logout</button>
+        <div class="logout-container">
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
     </header>
 
     <main>
@@ -1683,312 +2161,203 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Register service worker for notifications
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('/sw.js');
+                    console.log('ServiceWorker registration successful with scope:', registration.scope);
+                } catch (err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                }
+            }
 
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyAaQDKLlmT3zYC5ww3rxiul_FB7HfviZUA",
-            authDomain: "royalstar-d6a4e.firebaseapp.com",
-            projectId: "royalstar-d6a4e",
-            storageBucket: "royalstar-d6a4e.firebasestorage.app",
-            messagingSenderId: "796910377639",
-            appId: "1:796910377639:web:f8de8945e558fb9868d982",
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // Simple auth check - show 404 if not authenticated
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                document.body.innerHTML = `
-                    <style>
-                        .error-container {
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-                            justify-content: center;
-                            height: 100vh;
-                            background: #121212;
-                            color: white;
-                            text-align: center;
-                            padding: 2rem;
-                        }
-                        .error-code {
-                            font-size: 8rem;
-                            font-weight: bold;
-                            background: linear-gradient(45deg, #9333ea, #22c55e);
-                            -webkit-background-clip: text;
-                            -webkit-text-fill-color: transparent;
-                            margin-bottom: 1rem;
-                            text-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
-                        }
-                        .error-message {
-                            font-size: 1.5rem;
-                            margin-bottom: 2rem;
-                            color: #b3b3b3;
-                        }
-                        .error-description {
-                            font-size: 1rem;
-                            color: #666;
-                            max-width: 500px;
-                            margin-bottom: 2rem;
-                        }
-                        .home-btn {
-                            padding: 1rem 2rem;
-                            background: linear-gradient(45deg, #9333ea, #22c55e);
-                            border: none;
-                            border-radius: 25px;
-                            color: white;
-                            font-size: 1rem;
-                            cursor: pointer;
-                            transition: all 0.3s ease;
-                            text-decoration: none;
-                            box-shadow: 0 0 15px rgba(147, 51, 234, 0.3);
-                        }
-                        .home-btn:hover {
-                            transform: translateY(-2px);
-                            box-shadow: 0 0 25px rgba(147, 51, 234, 0.5);
-                        }
-                        .home-btn:active {
-                            transform: translateY(0);
-                        }
-                        @media screen and (max-width: 768px) {
-                            .error-code {
-                                font-size: 6rem;
-                            }
-                            .error-message {
-                                font-size: 1.2rem;
-                            }
-                            .error-description {
-                                font-size: 0.9rem;
-                                padding: 0 1rem;
-                            }
-                            .home-btn {
-                                padding: 0.8rem 1.5rem;
-                                font-size: 0.9rem;
-                            }
-                        }
-                    </style>
-                    <div class="error-container">
-                        <div class="error-code">404</div>
-                        <div class="error-message">Access Denied</div>
-                        <div class="error-description">
-                            You don't have permission to access this page. Please make sure you're logged in with the correct credentials.
-                        </div>
-                        <a href="index.html" class="home-btn" id="loginRedirect">Go to Login</a>
-                    </div>
-                `;
-
-                // Add click handler for the login redirect button
-                document.getElementById('loginRedirect').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    // Clear all storage
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    // Force redirect to login page
-                    window.location.replace("index.html");
+            // Request notification permission
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('Notification permission granted');
+                    }
                 });
             }
-        });
 
-        // Simplified logout functionality
-        document.getElementById('logoutBtn')?.addEventListener('click', () => {
-            // First clear all storage
-            localStorage.clear();
-            sessionStorage.clear();
-            
-            // Then sign out from Firebase
-            signOut(auth).then(() => {
-                // Force redirect to login page
-                window.location.replace("index.html");
-            }).catch((error) => {
-                console.error('Error signing out:', error);
-                // Force redirect even if there's an error
-                window.location.replace("index.html");
-            });
-        });
-
-        // Song Data
-        const songData = {
-            recentlyPlayed: [
-                {
-                    title: 'Premalo',
-                    artist: 'Court',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872399/download_6_jpspgu.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866908/Premalo_ir0ohk.mp3'
-                },
-                {
-                    title: 'Godari Gattu',
-                    artist: 'Sankranthiki Vasthunam',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872530/download_7_fuc547.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866920/Godari_Gattu_vsw6tc.mp3'
-                },
-                {
-                    title: 'Bujji Thalli',
-                    artist: 'Thandel',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872765/download_8_vsrdmb.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866932/Bujji_Thalli_fmxl8l.mp3'
-                },
-                {
-                    title: 'Prema Velluva',
-                    artist: 'HIT 3',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743873184/download_10_mpnm7m.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866982/Prema_Velluva_ruakii.mp3'
-                }
-            ],
-            featuredPlaylists: [
-                {
-                    title: 'Oh Pilla',
-                    artist: 'Private',
-                    cover: 'https://res.cloudinary.com/dcso0vsxw/image/upload/v1743778065/6bec1d111e19dd7d6573f59f9200d0889e6256143f0f9dad4612f9cdcfe52cb5.0_o5osap.jpg',
-                    audio: 'https://res.cloudinary.com/dcso0vsxw/video/upload/v1743778038/Oh_Pilla_PenduJatt.Com.Se_gnrf5f.mp3'
-                },
-                {
-                    title: 'Chandruloo Unde',
-                    artist: 'Nuvvostanante Nenoddantana',
-                    cover: 'https://res.cloudinary.com/dykzuljjr/image/upload/v1743418357/images_c9cebr.jpg',
-                    audio: 'https://res.cloudinary.com/dykzuljjr/video/upload/v1743418367/04_-_Chandrullo_Unde_Kundelu_-_SenSongsMp3.co_w0qnnr.mp3'
-                },
-                {
-                    title: 'Yedurangula Vaana',
-                    artist: '18 Pages',
-                    cover: 'https://res.cloudinary.com/dykzuljjr/image/upload/v1743417356/16712135423689_h4r5p5.jpg',
-                    audio: 'https://res.cloudinary.com/dykzuljjr/video/upload/v1743416935/Yedurangula_Vaana_128_Kbps_f9ppps.mp3'
-                },
-                {
-                    title: 'Yemito',
-                    artist: 'Andala Rakshasi',
-                    cover: 'https://res.cloudinary.com/dykzuljjr/image/upload/v1743436807/Andala-Rakshasi-2012jpeg_sl2cx9.jpg',
-                    audio: 'https://res.cloudinary.com/dykzuljjr/video/upload/v1743436814/Yemito_-_SenSongsmp3.Co_jk9o7m.mp3'
-                },
-                {
-                    title: 'Kumkumala',
-                    artist: 'Brahmastra',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872244/images_5_lpvdam.jpg',
-                    audio: 'https://res.cloudinary.com/dl8dmkhmv/video/upload/v1743872224/Kumkumala_te5lqe.mp3'
-                },
-                {
-                    title: 'Hilesso Hilessa',
-                    artist: 'Thandel',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872764/download_9_xq9sm5.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866911/Hilesso_Hilessa_rxtdxm.mp3'
-                },
-                {
-                    title: 'Choosi Chudangane',
-                    artist: 'Chalo',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872062/images_4_h05wcd.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866906/Choosi_Chudangane_-_SenSongsMp3.Co_jtc0t4.mp3'
-                },
-                {
-                    title: 'inkem inkem inkem kaavaale',
-                    artist: 'Geetha Govindam',
-                    cover: 'https://res.cloudinary.com/dkhbceri0/image/upload/v1743738733/size_m_1531202221_vcuqna.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743591099/Inkem_Inkem_Inkem_Kaavaale_3D_-_SenSongsMp3.Co_jfxqn5.mp3'
-                }
-            ],
-            trendingNow: [
-                {
-                    title: 'Telisiney Na Nuvvey',
-                    artist: 'Arjun Reddy',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743871578/download_5_dqdiwu.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743867010/Telisiney_Na_Nuvvey_-_SenSongsMp3.Co_oydt9t.mp3'
-                },
-                {
-                    title: 'Nijamaa Kalaa',
-                    artist: 'Lucky Bhaskar',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743869998/download_1_hxgr9u.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866875/Nijamaa_Kalaa_axb4wy.mp3'
-                },
-                {
-                    title: 'Oh My Lilly',
-                    artist: 'Dj Tillu 2',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743870922/images_3_qgl7ji.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743867085/Oh_My_Lilly_zpf9mw.mp3'
-                },
-                {
-                    title: 'Pranam Pothunna',
-                    artist: 'Love Today',
-                    cover: 'https://res.cloudinary.com/dykzuljjr/image/upload/v1743417446/16697883393741_kwtjqx.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866602/Pranam_Pothunna_ysm73c.mp3'
-                }
-            ],
-            newReleases: [
-                {
-                    title: 'Ticket Eh Konakunda',
-                    artist: 'Dj Tillu 2',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743870405/images_1_h6vhmu.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743867094/Ticket_Eh_Konakunda_cpxfbo.mp3'
-                },
-                {
-                    title: 'Sooreede',
-                    artist: 'Salaar',
-                    cover: 'https://res.cloudinary.com/dkhbceri0/image/upload/v1743730098/Sooreede-From-Salaar-Cease-Fire-Telugu-Telugu-2023-20241107224711-500x500_lyoqqv.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743591104/iSongs.info_03_-_Sooreede_e83d7n.mp3'
-                },
-                {
-                    title: 'Lucky Bhaskar(Title song)',
-                    artist: 'Lucky Bhaskar',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743869643/download_qyluvw.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866865/Lucky_Baskhar_cgx23b.mp3'
-                },
-                {
-                    title: 'Single Kingulam',
-                    artist: 'A1 Express',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743870091/download_2_b76xdp.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866885/Single_Kingulam_-_SenSongsMp3.Com_1_qvvwsw.mp3'
-                },
-                {
-                    title: 'Radhika',
-                    artist: 'Dj Tillu 2',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743870922/images_2_i0ol8j.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743867082/Radhika_my4jpd.mp3'
-                },
-                {
-                    title: 'Bujjikanna',
-                    artist: 'Love Today',
-                    cover: 'https://res.cloudinary.com/dykzuljjr/image/upload/v1743417531/16712506771622_pzuipy.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743867065/Bujjikanna_128_Kbps_wj0lmh.mp3'
-                }
-            ],
-            godSongs: [
-                {
-                    title: 'Kumkumala',
-                    artist: 'Brahmastra',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872244/images_5_lpvdam.jpg',
-                    audio: 'https://res.cloudinary.com/dl8dmkhmv/video/upload/v1743872224/Kumkumala_te5lqe.mp3'
-                },
-                {
-                    title: 'Hilesso Hilessa',
-                    artist: 'Thandel',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872764/download_9_xq9sm5.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866911/Hilesso_Hilessa_rxtdxm.mp3'
-                },
-                {
-                    title: 'Choosi Chudangane',
-                    artist: 'Chalo',
-                    cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872062/images_4_h05wcd.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866906/Choosi_Chudangane_-_SenSongsMp3.Co_jtc0t4.mp3'
-                },
-                {
-                    title: 'inkem inkem inkem kaavaale',
-                    artist: 'Geetha Govindam',
-                    cover: 'https://res.cloudinary.com/dkhbceri0/image/upload/v1743738733/size_m_1531202221_vcuqna.jpg',
-                    audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743591099/Inkem_Inkem_Inkem_Kaavaale_3D_-_SenSongsMp3.Co_jfxqn5.mp3'
-                }
-            ]
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
             let currentSongIndex = 0;
             let isPlaying = false;
             let isShuffled = false;
             let isRepeating = false;
             const audio = new Audio();
             let allSongs = [];
+
+            // Song Data
+            const songData = {
+                recentlyPlayed: [
+                    {
+                        title: 'Premalo',
+                        artist: 'Court',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872399/download_6_jpspgu.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866908/Premalo_ir0ohk.mp3'
+                    },
+                    {
+                        title: 'Godari Gattu',
+                        artist: 'Sankranthiki Vasthunam',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872530/download_7_fuc547.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866920/Godari_Gattu_vsw6tc.mp3'
+                    },
+                    {
+                        title: 'Bujji Thalli',
+                        artist: 'Thandel',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872765/download_8_vsrdmb.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866932/Bujji_Thalli_fmxl8l.mp3'
+                    },
+                    {
+                        title: 'Prema Velluva',
+                        artist: 'HIT 3',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743873184/download_10_mpnm7m.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866982/Prema_Velluva_ruakii.mp3'
+                    }
+                ],
+                featuredPlaylists: [
+                    {
+                        title: 'Oh Pilla',
+                        artist: 'Private',
+                        cover: 'https://res.cloudinary.com/dcso0vsxw/image/upload/v1743778065/6bec1d111e19dd7d6573f59f9200d0889e6256143f0f9dad4612f9cdcfe52cb5.0_o5osap.jpg',
+                        audio: 'https://res.cloudinary.com/dcso0vsxw/video/upload/v1743778038/Oh_Pilla_PenduJatt.Com.Se_gnrf5f.mp3'
+                    },
+                    {
+                        title: 'Chandruloo Unde',
+                        artist: 'Nuvvostanante Nenoddantana',
+                        cover: 'https://res.cloudinary.com/dykzuljjr/image/upload/v1743418357/images_c9cebr.jpg',
+                        audio: 'https://res.cloudinary.com/dykzuljjr/video/upload/v1743418367/04_-_Chandrullo_Unde_Kundelu_-_SenSongsMp3.co_w0qnnr.mp3'
+                    },
+                    {
+                        title: 'Yedurangula Vaana',
+                        artist: '18 Pages',
+                        cover: 'https://res.cloudinary.com/dykzuljjr/image/upload/v1743417356/16712135423689_h4r5p5.jpg',
+                        audio: 'https://res.cloudinary.com/dykzuljjr/video/upload/v1743416935/Yedurangula_Vaana_128_Kbps_f9ppps.mp3'
+                    },
+                    {
+                        title: 'Yemito',
+                        artist: 'Andala Rakshasi',
+                        cover: 'https://res.cloudinary.com/dykzuljjr/image/upload/v1743436807/Andala-Rakshasi-2012jpeg_sl2cx9.jpg',
+                        audio: 'https://res.cloudinary.com/dykzuljjr/video/upload/v1743436814/Yemito_-_SenSongsmp3.Co_jk9o7m.mp3'
+                    },
+                    {
+                        title: 'Kumkumala',
+                        artist: 'Brahmastra',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872244/images_5_lpvdam.jpg',
+                        audio: 'https://res.cloudinary.com/dl8dmkhmv/video/upload/v1743872224/Kumkumala_te5lqe.mp3'
+                    },
+                    {
+                        title: 'Hilesso Hilessa',
+                        artist: 'Thandel',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872764/download_9_xq9sm5.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866911/Hilesso_Hilessa_rxtdxm.mp3'
+                    },
+                    {
+                        title: 'Choosi Chudangane',
+                        artist: 'Chalo',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872062/images_4_h05wcd.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866906/Choosi_Chudangane_-_SenSongsMp3.Co_jtc0t4.mp3'
+                    },
+                    {
+                        title: 'inkem inkem inkem kaavaale',
+                        artist: 'Geetha Govindam',
+                        cover: 'https://res.cloudinary.com/dkhbceri0/image/upload/v1743738733/size_m_1531202221_vcuqna.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743591099/Inkem_Inkem_Inkem_Kaavaale_3D_-_SenSongsMp3.Co_jfxqn5.mp3'
+                    }
+                ],
+                trendingNow: [
+                    {
+                        title: 'Telisiney Na Nuvvey',
+                        artist: 'Arjun Reddy',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743871578/download_5_dqdiwu.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743867010/Telisiney_Na_Nuvvey_-_SenSongsMp3.Co_oydt9t.mp3'
+                    },
+                    {
+                        title: 'Nijamaa Kalaa',
+                        artist: 'Lucky Bhaskar',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743869998/download_1_hxgr9u.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866875/Nijamaa_Kalaa_axb4wy.mp3'
+                    },
+                    {
+                        title: 'Oh My Lilly',
+                        artist: 'Dj Tillu 2',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743870922/images_3_qgl7ji.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743867085/Oh_My_Lilly_zpf9mw.mp3'
+                    },
+                    {
+                        title: 'Pranam Pothunna',
+                        artist: 'Love Today',
+                        cover: 'https://res.cloudinary.com/dykzuljjr/image/upload/v1743417446/16697883393741_kwtjqx.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866602/Pranam_Pothunna_ysm73c.mp3'
+                    }
+                ],
+                newReleases: [
+                    {
+                        title: 'Ticket Eh Konakunda',
+                        artist: 'Dj Tillu 2',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743870405/images_1_h6vhmu.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743867094/Ticket_Eh_Konakunda_cpxfbo.mp3'
+                    },
+                    {
+                        title: 'Sooreede',
+                        artist: 'Salaar',
+                        cover: 'https://res.cloudinary.com/dkhbceri0/image/upload/v1743730098/Sooreede-From-Salaar-Cease-Fire-Telugu-Telugu-2023-20241107224711-500x500_lyoqqv.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743591104/iSongs.info_03_-_Sooreede_e83d7n.mp3'
+                    },
+                    {
+                        title: 'Lucky Bhaskar(Title song)',
+                        artist: 'Lucky Bhaskar',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743869643/download_qyluvw.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866865/Lucky_Baskhar_cgx23b.mp3'
+                    },
+                    {
+                        title: 'Single Kingulam',
+                        artist: 'A1 Express',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743870091/download_2_b76xdp.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866885/Single_Kingulam_-_SenSongsMp3.Com_1_qvvwsw.mp3'
+                    },
+                    {
+                        title: 'Radhika',
+                        artist: 'Dj Tillu 2',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743870922/images_2_i0ol8j.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743867082/Radhika_my4jpd.mp3'
+                    },
+                    {
+                        title: 'Bujjikanna',
+                        artist: 'Love Today',
+                        cover: 'https://res.cloudinary.com/dykzuljjr/image/upload/v1743417531/16712506771622_pzuipy.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743867065/Bujjikanna_128_Kbps_wj0lmh.mp3'
+                    }
+                ],
+                godSongs: [
+                    {
+                        title: 'Kumkumala',
+                        artist: 'Brahmastra',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872244/images_5_lpvdam.jpg',
+                        audio: 'https://res.cloudinary.com/dl8dmkhmv/video/upload/v1743872224/Kumkumala_te5lqe.mp3'
+                    },
+                    {
+                        title: 'Hilesso Hilessa',
+                        artist: 'Thandel',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872764/download_9_xq9sm5.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866911/Hilesso_Hilessa_rxtdxm.mp3'
+                    },
+                    {
+                        title: 'Choosi Chudangane',
+                        artist: 'Chalo',
+                        cover: 'https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872062/images_4_h05wcd.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743866906/Choosi_Chudangane_-_SenSongsMp3.Co_jtc0t4.mp3'
+                    },
+                    {
+                        title: 'inkem inkem inkem kaavaale',
+                        artist: 'Geetha Govindam',
+                        cover: 'https://res.cloudinary.com/dkhbceri0/image/upload/v1743738733/size_m_1531202221_vcuqna.jpg',
+                        audio: 'https://res.cloudinary.com/dkhbceri0/video/upload/v1743591099/Inkem_Inkem_Inkem_Kaavaale_3D_-_SenSongsMp3.Co_jfxqn5.mp3'
+                    }
+                ]
+            };
 
             // Initialize song database
             const songDatabase = {
@@ -2136,14 +2505,18 @@
 
             function initializeSliders() {
                 const sliders = document.querySelectorAll('.slider-container');
+                const fullScreenSlider = document.querySelector('.full-screen-slider');
+                const fullScreenContent = document.querySelector('.full-screen-content');
+                
                 sliders.forEach(slider => {
                     const category = slider.getAttribute('data-category');
                     const songs = songData[category];
                     
                     if (songs) {
-                        songs.forEach(song => {
+                        songs.forEach((song, index) => {
                             const slide = document.createElement('div');
                             slide.className = 'song-slide';
+                            slide.style.setProperty('--index', index);
                             slide.innerHTML = `
                                 <img src="${song.cover}" alt="${song.title}">
                                 <div class="song-info-container">
@@ -2156,136 +2529,137 @@
                             `;
                             
                             slide.addEventListener('click', () => {
-                                const currentSongTitle = document.getElementById('current-song').textContent;
-                                
-                                if (currentSongTitle === song.title) {
-                                    togglePlay();
-                                } else {
-                                    if (isPlaying) {
-                                        audio.pause();
-                                    }
-                                    currentSongIndex = allSongs.findIndex(s => s.title === song.title);
-                                    loadSong(song);
-                                    audio.play();
-                                    isPlaying = true;
-                                    document.querySelector('#play-pause i').classList.replace('fa-play', 'fa-pause');
-                                }
+                                showFullScreenSlider(songs, index, category);
                             });
                             
                             slider.appendChild(slide);
                         });
                     }
-
-                    // Touch and mouse events for smooth scrolling
-                    let isDown = false;
-                    let startX;
-                    let scrollLeft;
-                    let momentum = 0;
-                    let lastScrollTime = 0;
-                    let lastScrollPosition = 0;
-
-                    // Touch events
-                    slider.addEventListener('touchstart', (e) => {
-                        isDown = true;
-                        startX = e.touches[0].pageX - slider.offsetLeft;
-                        scrollLeft = slider.scrollLeft;
-                        momentum = 0;
-                        lastScrollTime = Date.now();
-                        lastScrollPosition = scrollLeft;
-                    });
-
-                    slider.addEventListener('touchmove', (e) => {
-                        if (!isDown) return;
-                        e.preventDefault();
-                        const x = e.touches[0].pageX - slider.offsetLeft;
-                        const walk = (x - startX) * 2;
-                        slider.scrollLeft = scrollLeft - walk;
-                        
-                        // Calculate momentum
-                        const currentTime = Date.now();
-                        const timeDiff = currentTime - lastScrollTime;
-                        if (timeDiff > 0) {
-                            const currentScroll = slider.scrollLeft;
-                            const scrollDiff = currentScroll - lastScrollPosition;
-                            momentum = scrollDiff / timeDiff;
-                            lastScrollPosition = currentScroll;
-                            lastScrollTime = currentTime;
-                        }
-                    });
-
-                    slider.addEventListener('touchend', () => {
-                        isDown = false;
-                        if (Math.abs(momentum) > 0.1) {
-                            const targetScroll = slider.scrollLeft + (momentum * 100);
-                            smoothScrollTo(slider, targetScroll, 300);
-                        }
-                    });
-
-                    // Mouse events
-                    slider.addEventListener('mousedown', (e) => {
-                        isDown = true;
-                        startX = e.pageX - slider.offsetLeft;
-                        scrollLeft = slider.scrollLeft;
-                        momentum = 0;
-                        lastScrollTime = Date.now();
-                        lastScrollPosition = scrollLeft;
-                    });
-
-                    slider.addEventListener('mousemove', (e) => {
-                        if (!isDown) return;
-                        e.preventDefault();
-                        const x = e.pageX - slider.offsetLeft;
-                        const walk = (x - startX) * 2;
-                        slider.scrollLeft = scrollLeft - walk;
-                        
-                        // Calculate momentum
-                        const currentTime = Date.now();
-                        const timeDiff = currentTime - lastScrollTime;
-                        if (timeDiff > 0) {
-                            const currentScroll = slider.scrollLeft;
-                            const scrollDiff = currentScroll - lastScrollPosition;
-                            momentum = scrollDiff / timeDiff;
-                            lastScrollPosition = currentScroll;
-                            lastScrollTime = currentTime;
-                        }
-                    });
-
-                    slider.addEventListener('mouseup', () => {
-                        isDown = false;
-                        if (Math.abs(momentum) > 0.1) {
-                            const targetScroll = slider.scrollLeft + (momentum * 100);
-                            smoothScrollTo(slider, targetScroll, 300);
-                        }
-                    });
-
-                    slider.addEventListener('mouseleave', () => {
-                        isDown = false;
-                    });
                 });
-            }
 
-            // Smooth scroll function
-            function smoothScrollTo(element, target, duration) {
-                const start = element.scrollLeft;
-                const change = target - start;
-                const startTime = performance.now();
-                
-                function animate(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
+                function showFullScreenSlider(songs, startIndex, category) {
+                    fullScreenContent.innerHTML = '';
                     
-                    element.scrollLeft = start + (change * easeInOutCubic(progress));
+                    // Create slides for all songs
+                    songs.forEach((song, index) => {
+                        const slide = document.createElement('div');
+                        slide.className = 'full-screen-slide';
+                        slide.innerHTML = `
+                            <img src="${song.cover}" alt="${song.title}">
+                            <div class="song-info">
+                                <div class="song-title">${song.title}</div>
+                                <div class="song-artist">${song.artist}</div>
+                            </div>
+                        `;
+                        fullScreenContent.appendChild(slide);
+                    });
+
+                    // Show full screen slider
+                    fullScreenSlider.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+
+                    // Scroll to starting song
+                    fullScreenContent.scrollTo({
+                        left: startIndex * window.innerWidth,
+                        behavior: 'smooth'
+                    });
+
+                    // Update current song and start playing
+                    currentSongIndex = allSongs.findIndex(s => s.title === songs[startIndex].title);
+                    loadSong(songs[startIndex]);
+                    audio.play();
+                    isPlaying = true;
+                    updatePlayPauseButtons();
+
+                    // Setup full screen controls
+                    setupFullScreenControls(songs);
+                }
+
+                function setupFullScreenControls(songs) {
+                    const closeButton = document.querySelector('.close-full-screen');
+                    const playPauseButton = document.getElementById('full-screen-play-pause');
+                    const nextButton = document.getElementById('full-screen-next');
+                    const prevButton = document.getElementById('full-screen-prev');
+                    const progressBar = document.querySelector('.full-screen-progress');
+
+                    closeButton.onclick = () => {
+                        fullScreenSlider.classList.remove('active');
+                        document.body.style.overflow = '';
+                    };
+
+                    playPauseButton.onclick = () => {
+                        togglePlay();
+                        updatePlayPauseButtons();
+                    };
+
+                    nextButton.onclick = () => {
+                        const nextIndex = (currentSongIndex + 1) % songs.length;
+                        fullScreenContent.scrollTo({
+                            left: nextIndex * window.innerWidth,
+                            behavior: 'smooth'
+                        });
+                        loadSong(songs[nextIndex]);
+                        audio.play();
+                        isPlaying = true;
+                        updatePlayPauseButtons();
+                    };
+
+                    prevButton.onclick = () => {
+                        const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+                        fullScreenContent.scrollTo({
+                            left: prevIndex * window.innerWidth,
+                            behavior: 'smooth'
+                        });
+                        loadSong(songs[prevIndex]);
+                        audio.play();
+                        isPlaying = true;
+                        updatePlayPauseButtons();
+                    };
+
+                    progressBar.onclick = (e) => {
+                        const width = progressBar.clientWidth;
+                        const clickX = e.offsetX;
+                        const duration = audio.duration;
+                        audio.currentTime = (clickX / width) * duration;
+                    };
+
+                    // Handle slide changes on scroll
+                    fullScreenContent.onscroll = debounce(() => {
+                        const currentSlide = Math.round(fullScreenContent.scrollLeft / window.innerWidth);
+                        if (currentSongIndex !== currentSlide) {
+                            currentSongIndex = currentSlide;
+                            loadSong(songs[currentSlide]);
+                            audio.play();
+                            isPlaying = true;
+                            updatePlayPauseButtons();
+                        }
+                    }, 100);
+                }
+
+                function updatePlayPauseButtons() {
+                    const mainButton = document.querySelector('#play-pause i');
+                    const fullScreenButton = document.querySelector('#full-screen-play-pause i');
                     
-                    if (progress < 1) {
-                        requestAnimationFrame(animate);
+                    if (isPlaying) {
+                        mainButton.classList.replace('fa-play', 'fa-pause');
+                        fullScreenButton.classList.replace('fa-play', 'fa-pause');
+                    } else {
+                        mainButton.classList.replace('fa-pause', 'fa-play');
+                        fullScreenButton.classList.replace('fa-pause', 'fa-play');
                     }
                 }
-                
-                requestAnimationFrame(animate);
-            }
 
-            function easeInOutCubic(t) {
-                return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                function debounce(func, wait) {
+                    let timeout;
+                    return function executedFunction(...args) {
+                        const later = () => {
+                            clearTimeout(timeout);
+                            func(...args);
+                        };
+                        clearTimeout(timeout);
+                        timeout = setTimeout(later, wait);
+                    };
+                }
             }
 
             function loadSong(song) {
@@ -2293,6 +2667,16 @@
                 document.getElementById('current-artist').textContent = song.artist;
                 document.getElementById('current-album-art').src = song.cover;
                 audio.src = song.audio;
+
+                // Show notification for the current song
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({
+                        type: 'SHOW_NOTIFICATION',
+                        title: song.title,
+                        artist: song.artist,
+                        cover: song.cover
+                    });
+                }
             }
 
             function togglePlay() {
@@ -2556,6 +2940,68 @@
 
             initializeSliders();
             setupEventListeners();
+
+            // Add message event listener for service worker
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data.type === 'TOGGLE_PLAY') {
+                    togglePlay();
+                } else if (event.data.type === 'NEXT_SONG') {
+                    document.getElementById('next').click();
+                } else if (event.data.type === 'PREV_SONG') {
+                    document.getElementById('prev').click();
+                }
+            });
+
+            // Add logout button functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    // Clear any stored data
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    
+                    // Redirect to login page
+                    window.location.href = '/login.html';
+                });
+            }
+
+            // Update fullscreen player display
+            function updateFullscreenPlayer() {
+                const fullscreenPlayer = document.querySelector('.fullscreen-player');
+                if (fullscreenPlayer.classList.contains('active')) {
+                    const albumArt = fullscreenPlayer.querySelector('.album-art');
+                    const songTitle = fullscreenPlayer.querySelector('.song-title');
+                    const songArtist = fullscreenPlayer.querySelector('.song-artist');
+                    
+                    albumArt.src = document.getElementById('current-album-art').src;
+                    songTitle.textContent = document.getElementById('current-song').textContent;
+                    songArtist.textContent = document.getElementById('current-artist').textContent;
+                }
+            }
+
+            // Update progress in fullscreen player
+            function updateFullscreenProgress() {
+                const fullscreenPlayer = document.querySelector('.fullscreen-player');
+                if (fullscreenPlayer.classList.contains('active')) {
+                    const progress = fullscreenPlayer.querySelector('.progress');
+                    const currentTime = fullscreenPlayer.querySelector('.current-time');
+                    const duration = fullscreenPlayer.querySelector('.duration');
+                    
+                    progress.style.width = (audio.currentTime / audio.duration) * 100 + '%';
+                    currentTime.textContent = formatTime(audio.currentTime);
+                    duration.textContent = formatTime(audio.duration);
+                }
+            }
+
+            // Add event listeners for fullscreen player
+            audio.addEventListener('timeupdate', updateFullscreenProgress);
+            audio.addEventListener('ended', () => {
+                const fullscreenPlayer = document.querySelector('.fullscreen-player');
+                if (fullscreenPlayer.classList.contains('active')) {
+                    const playPauseBtn = fullscreenPlayer.querySelector('.play-pause-btn i');
+                    playPauseBtn.className = 'fas fa-play';
+                }
+            });
         });
 
         // Update feedback functionality
@@ -2607,6 +3053,199 @@
                     successMessage.style.display = 'none';
                     feedbackForm.reset();
                 }
+            });
+        });
+
+        function toggleFullscreen() {
+            const fullscreenPlayer = document.querySelector('.fullscreen-player');
+            const albumArt = fullscreenPlayer.querySelector('.album-art');
+            const songTitle = fullscreenPlayer.querySelector('.song-title');
+            const songArtist = fullscreenPlayer.querySelector('.song-artist');
+            const currentTime = fullscreenPlayer.querySelector('.current-time');
+            const duration = fullscreenPlayer.querySelector('.duration');
+            const progress = fullscreenPlayer.querySelector('.progress');
+            const playPauseBtn = fullscreenPlayer.querySelector('.play-pause-btn i');
+
+            if (!fullscreenPlayer.classList.contains('active')) {
+                // Enter fullscreen
+                fullscreenPlayer.classList.add('active');
+                albumArt.src = document.getElementById('current-album-art').src;
+                songTitle.textContent = document.getElementById('current-song').textContent;
+                songArtist.textContent = document.getElementById('current-artist').textContent;
+                currentTime.textContent = formatTime(audio.currentTime);
+                duration.textContent = formatTime(audio.duration);
+                progress.style.width = (audio.currentTime / audio.duration) * 100 + '%';
+                playPauseBtn.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+            } else {
+                // Exit fullscreen
+                fullscreenPlayer.classList.remove('active');
+            }
+        }
+
+        // Add fullscreen player HTML structure
+        const fullscreenPlayerHTML = `
+            <div class="fullscreen-player">
+                <button class="close-btn control-btn" onclick="toggleFullscreen()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="fullscreen-content">
+                    <img class="album-art" src="" alt="Album Art">
+                    <div class="song-info">
+                        <h2 class="song-title"></h2>
+                        <p class="song-artist"></p>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" onclick="seek(event)">
+                            <div class="progress"></div>
+                        </div>
+                        <div class="time-info">
+                            <span class="current-time">0:00</span>
+                            <span class="duration">0:00</span>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <button class="control-btn" onclick="previousSong()">
+                            <i class="fas fa-step-backward"></i>
+                        </button>
+                        <button class="control-btn play-pause-btn" onclick="togglePlay()">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="control-btn" onclick="nextSong()">
+                            <i class="fas fa-step-forward"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add fullscreen player to the document
+        document.body.insertAdjacentHTML('beforeend', fullscreenPlayerHTML);
+
+        // Update fullscreen player when song changes
+        function updateFullscreenPlayer() {
+            const fullscreenPlayer = document.querySelector('.fullscreen-player');
+            if (fullscreenPlayer.classList.contains('active')) {
+                const albumArt = fullscreenPlayer.querySelector('.album-art');
+                const songTitle = fullscreenPlayer.querySelector('.song-title');
+                const songArtist = fullscreenPlayer.querySelector('.song-artist');
+                
+                albumArt.src = document.getElementById('current-album-art').src;
+                songTitle.textContent = document.getElementById('current-song').textContent;
+                songArtist.textContent = document.getElementById('current-artist').textContent;
+            }
+        }
+
+        // Update progress in fullscreen player
+        function updateFullscreenProgress() {
+            const fullscreenPlayer = document.querySelector('.fullscreen-player');
+            if (fullscreenPlayer.classList.contains('active')) {
+                const progress = fullscreenPlayer.querySelector('.progress');
+                const currentTime = fullscreenPlayer.querySelector('.current-time');
+                const duration = fullscreenPlayer.querySelector('.duration');
+                
+                progress.style.width = (audio.currentTime / audio.duration) * 100 + '%';
+                currentTime.textContent = formatTime(audio.currentTime);
+                duration.textContent = formatTime(audio.duration);
+            }
+        }
+
+        // Add event listeners for fullscreen player
+        audio.addEventListener('timeupdate', updateFullscreenProgress);
+        audio.addEventListener('ended', () => {
+            const fullscreenPlayer = document.querySelector('.fullscreen-player');
+            if (fullscreenPlayer.classList.contains('active')) {
+                const playPauseBtn = fullscreenPlayer.querySelector('.play-pause-btn i');
+                playPauseBtn.className = 'fas fa-play';
+            }
+        });
+
+        // Update play/pause button in fullscreen player
+        function updateFullscreenPlayPause() {
+            const fullscreenPlayer = document.querySelector('.fullscreen-player');
+            if (fullscreenPlayer.classList.contains('active')) {
+                const playPauseBtn = fullscreenPlayer.querySelector('.play-pause-btn i');
+                playPauseBtn.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+            }
+        }
+
+        // Modify existing togglePlay function to update fullscreen player
+        const originalTogglePlay = togglePlay;
+        togglePlay = function() {
+            originalTogglePlay();
+            updateFullscreenPlayPause();
+        };
+
+        // Modify existing loadSong function to update fullscreen player
+        const originalLoadSong = loadSong;
+        loadSong = function(song) {
+            originalLoadSong(song);
+            updateFullscreenPlayer();
+        };
+
+        // Update the loadSongsForSection function to properly display song names
+        function loadSongsForSection(section) {
+            if (isLoading) return;
+            isLoading = true;
+
+            const slider = section.querySelector('.slider-container');
+            const category = slider.getAttribute('data-category');
+            const songs = songData[category];
+            
+            // Create song-list div if it doesn't exist
+            let songList = slider.querySelector('.song-list');
+            if (!songList) {
+                songList = document.createElement('div');
+                songList.className = 'song-list';
+                slider.appendChild(songList);
+            }
+
+            const loading = section.querySelector('.loading-animation');
+            if (loading) loading.style.display = 'block';
+            
+            setTimeout(() => {
+                if (songs) {
+                    songList.innerHTML = '';
+                    songs.forEach(song => {
+                        const songItem = document.createElement('div');
+                        songItem.className = 'song-item';
+                        songItem.innerHTML = 
+                            '<img src="' + song.cover + '" alt="' + song.title + '">' +
+                            '<div class="song-info-overlay">' +
+                                '<div class="song-title">' + song.title + '</div>' +
+                                '<div class="song-artist">' + song.artist + '</div>' +
+                            '</div>' +
+                            '<div class="play-button-overlay">' +
+                                '<i class="fas fa-play"></i>' +
+                            '</div>';
+                        
+                        songItem.addEventListener('click', () => {
+                            currentSongIndex = allSongs.findIndex(s => s.title === song.title);
+                            loadSong(song);
+                            audio.play();
+                            isPlaying = true;
+                            updatePlayPauseButtons();
+                        });
+                        
+                        songList.appendChild(songItem);
+                    });
+                }
+                
+                if (loading) loading.style.display = 'none';
+                isLoading = false;
+            }, 500);
+        }
+
+        // Initialize all sections when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.playlist-section');
+            sections.forEach(section => {
+                // Make section visible
+                section.style.opacity = '1';
+                section.style.visibility = 'visible';
+                section.style.display = 'block';
+                
+                // Load songs for this section
+                loadSongsForSection(section);
             });
         });
     </script>

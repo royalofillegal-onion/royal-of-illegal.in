@@ -2019,6 +2019,124 @@
             color: #9333ea;
             font-weight: bold;
         }
+
+        .see-more-section {
+            min-width: 200px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a1a, #000000);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .see-more-section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+        }
+
+        .see-more-content {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .see-more-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #9333ea;
+        }
+
+        @media (max-width: 768px) {
+            .see-more-section {
+                min-width: 160px;
+            }
+            
+            .see-more-content {
+                font-size: 1rem;
+            }
+            
+            .see-more-icon {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .see-more-section {
+                min-width: 140px;
+            }
+            
+            .see-more-content {
+                font-size: 0.9rem;
+            }
+            
+            .see-more-icon {
+                font-size: 1.2rem;
+            }
+        }
+
+        .slider-container.expanded {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a1a, #000000);
+            z-index: 1000;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .slider-container.expanded .slider {
+            height: calc(100% - 40px);
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .slider-container.expanded .song-slide {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1;
+        }
+
+        .slider-container.expanded .song-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slider-container.expanded .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        @media (max-width: 768px) {
+            .slider-container.expanded .slider {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .slider-container.expanded .slider {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -3248,6 +3366,163 @@
                 loadSongsForSection(section);
             });
         });
+
+        // Add function to show full view for a section
+        function showFullView(section) {
+            const sectionTitle = section.querySelector('h2').textContent;
+            const songs = JSON.parse(section.dataset.songs);
+            
+            // Create full view container
+            const fullView = document.createElement('div');
+            fullView.className = 'full-view';
+            fullView.innerHTML = `
+                <div class="full-view-header">
+                    <h2>${sectionTitle}</h2>
+                    <button class="close-btn" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="full-view-content">
+                    ${songs.map(song => `
+                        <div class="song-item" onclick="loadSong(${JSON.stringify(song).replace(/"/g, '&quot;')})">
+                            <img src="${song.albumArt}" alt="${song.title}">
+                            <div class="song-info">
+                                <h3 class="song-title">${song.title}</h3>
+                                <p class="song-artist">${song.artist}</p>
+                            </div>
+                            <div class="play-button-overlay">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Add styles for full view
+            const style = document.createElement('style');
+            style.textContent = `
+                .full-view {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(135deg, #1a1a1a, #000000);
+                    z-index: 1000;
+                    padding: 20px;
+                    overflow-y: auto;
+                }
+                
+                .full-view-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+                    padding-bottom: 10px;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                }
+                
+                .full-view-header h2 {
+                    color: white;
+                    font-size: 1.5rem;
+                    margin: 0;
+                }
+                
+                .full-view-header .close-btn {
+                    background: none;
+                    border: none;
+                    color: white;
+                    font-size: 1.2rem;
+                    cursor: pointer;
+                    padding: 5px;
+                }
+                
+                .full-view-content {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                    gap: 20px;
+                    padding: 10px;
+                }
+                
+                @media (max-width: 768px) {
+                    .full-view-content {
+                        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                        gap: 15px;
+                    }
+                }
+                
+                @media (max-width: 576px) {
+                    .full-view-content {
+                        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                        gap: 10px;
+                    }
+                }
+            `;
+            
+            document.head.appendChild(style);
+            document.body.appendChild(fullView);
+        }
+
+        // Update the loadSongsForSection function to add "See More" button
+        function loadSongsForSection(section) {
+            const songList = section.querySelector('.song-list');
+            if (!songList) return;
+            
+            const songs = section.dataset.songs ? JSON.parse(section.dataset.songs) : [];
+            
+            // Clear existing content
+            songList.innerHTML = '';
+            
+            // Add "See More" section
+            const seeMoreSection = document.createElement('div');
+            seeMoreSection.className = 'see-more-section';
+            seeMoreSection.innerHTML = `
+                <div class="see-more-content">
+                    <i class="fas fa-chevron-right see-more-icon"></i>
+                    <div>See All</div>
+                </div>
+            `;
+            
+            seeMoreSection.addEventListener('click', () => {
+                const sliderContainer = section.querySelector('.slider-container');
+                sliderContainer.classList.add('expanded');
+                
+                // Add close button
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'close-btn';
+                closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                closeBtn.onclick = () => {
+                    sliderContainer.classList.remove('expanded');
+                    closeBtn.remove();
+                };
+                sliderContainer.appendChild(closeBtn);
+            });
+            
+            songList.appendChild(seeMoreSection);
+            
+            // Add songs
+            songs.forEach((song, index) => {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+                songItem.dataset.songId = song.id;
+                songItem.innerHTML = `
+                    <img src="${song.albumArt}" alt="${song.title}">
+                    <div class="song-info">
+                        <h3 class="song-title">${song.title}</h3>
+                        <p class="song-artist">${song.artist}</p>
+                    </div>
+                    <div class="play-button-overlay">
+                        <i class="fas fa-play"></i>
+                    </div>
+                `;
+                
+                songItem.addEventListener('click', () => {
+                    loadSong(song);
+                });
+                
+                songList.appendChild(songItem);
+            });
+        }
     </script>
 </body>
 </html>

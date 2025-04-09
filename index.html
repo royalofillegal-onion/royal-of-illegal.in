@@ -2797,6 +2797,85 @@
                         cover: song.cover
                     });
                 }
+
+                // Initialize play counts if not exists
+                if (!localStorage.getItem('songPlayCounts')) {
+                    localStorage.setItem('songPlayCounts', JSON.stringify({}));
+                }
+
+                // Function to update play count
+                function updatePlayCount(songTitle) {
+                    const playCounts = JSON.parse(localStorage.getItem('songPlayCounts'));
+                    playCounts[songTitle] = (playCounts[songTitle] || 0) + 1;
+                    localStorage.setItem('songPlayCounts', JSON.stringify(playCounts));
+                }
+
+                // Function to sort songs by play count
+                function sortSongsByPlayCount(songs) {
+                    const playCounts = JSON.parse(localStorage.getItem('songPlayCounts'));
+                    return songs.sort((a, b) => {
+                        const countA = playCounts[a.title] || 0;
+                        const countB = playCounts[b.title] || 0;
+                        return countB - countA;
+                    });
+                }
+
+                // Modify loadSong function to update play count
+                function loadSong(song) {
+                    // ... existing loadSong code ...
+                    updatePlayCount(song.title);
+                    // ... rest of existing code ...
+                }
+
+                // Modify initializeSliders function to sort songs
+                function initializeSliders() {
+                    Object.keys(songData).forEach(category => {
+                        const slider = document.querySelector(`.slider-container[data-category="${category}"]`);
+                        if (slider) {
+                            // Sort songs by play count
+                            const sortedSongs = sortSongsByPlayCount(songData[category]);
+                            
+                            // Clear existing slides
+                            slider.innerHTML = '';
+                            
+                            // Create new slides in sorted order
+                            sortedSongs.forEach((song, index) => {
+                                const slide = document.createElement('div');
+                                slide.className = 'song-slide';
+                                slide.style.setProperty('--index', index);
+                                slide.innerHTML = `
+                                    <img src="${song.cover}" alt="${song.title}">
+                                    <div class="song-info-container">
+                                        <div class="song-title">${song.title}</div>
+                                        <div class="song-artist">${song.artist}</div>
+                                    </div>
+                                    <div class="play-button-overlay">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                `;
+                                
+                                slide.addEventListener('click', () => {
+                                    const currentSongTitle = document.getElementById('current-song').textContent;
+                                    
+                                    if (currentSongTitle === song.title) {
+                                        togglePlay();
+                                    } else {
+                                        if (isPlaying) {
+                                            audio.pause();
+                                        }
+                                        currentSongIndex = allSongs.findIndex(s => s.title === song.title);
+                                        loadSong(song);
+                                        audio.play();
+                                        isPlaying = true;
+                                        document.querySelector('#play-pause i').classList.replace('fa-play', 'fa-pause');
+                                    }
+                                });
+                                
+                                slider.appendChild(slide);
+                            });
+                        }
+                    });
+                }
             }
 
             function togglePlay() {

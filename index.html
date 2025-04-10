@@ -35,6 +35,9 @@
 
         .logo {
             order: 1; /* Move logo to left */
+            display: flex; /* Add flex display to align items horizontally */
+            align-items: center; /* Center items vertically */
+            gap: 10px; /* Add space between image and text */
         }
 
         .logo img {
@@ -55,6 +58,7 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 10px rgba(147, 51, 234, 0.3);
             transition: all 0.3s ease;
+            margin: 0; /* Remove any default margin */
         }
 
         .logo:hover h1 {

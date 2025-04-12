@@ -579,12 +579,14 @@
             gap: 1rem;
             box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(1);
+            transition: transform 0.3s ease;
         }
 
         .player-controls:hover {
             background: rgba(50, 40, 60, 0.95);
             box-shadow: 0 -4px 20px rgba(147, 51, 234, 0.2);
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.05);
         }
 
         .song-info {
@@ -806,6 +808,8 @@
             gap: 0.5rem;
             justify-content: flex-end;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(1);
+            transition: all 0.3s ease;
         }
 
         .volume-controls:hover {
@@ -821,6 +825,10 @@
             outline: none;
             padding: 0;
             margin: 0;
+            min-width: 80px;
+            max-width: 150px;
+            width: 100%;
+            transition: width 0.3s ease;
         }
 
         /* Make the slider thumb bigger and more touch-friendly */
@@ -1324,6 +1332,8 @@
             padding: 0.8rem;
             border-top: 1px solid rgba(147, 51, 234, 0.3);
             box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3);
+            transform: scale(1);
+            transition: transform 0.3s ease;
         }
 
         .mobile-view-grid {
@@ -1392,6 +1402,8 @@
             font-size: 1rem;
             box-shadow: 0 0 15px rgba(147, 51, 234, 0.3);
             transition: all 0.3s ease;
+            transform: scale(1);
+            transition: transform 0.3s ease;
         }
 
         .close-mobile-view:hover {
@@ -1529,6 +1541,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transform: scale(1);
+            transition: transform 0.2s ease;
         }
 
         .mobile-player-controls .control-buttons button#play-pause {
@@ -1582,6 +1596,8 @@
                 padding: 0.7rem;
                 width: 45px;
                 height: 45px;
+                transform: scale(1);
+                transition: transform 0.2s ease;
             }
 
             .mobile-player-controls .control-buttons button#play-pause {
@@ -1610,6 +1626,8 @@
                 padding: 0.6rem;
                 width: 40px;
                 height: 40px;
+                transform: scale(1);
+                transition: transform 0.2s ease;
             }
 
             .mobile-player-controls .control-buttons button#play-pause {
@@ -2192,6 +2210,69 @@
             .slider-container.expanded .slider {
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
                 gap: 10px;
+            }
+        }
+
+        /* Mobile styles */
+        @media screen and (max-width: 768px) {
+            /* Remove borders from sections in mobile */
+            .playlist-section,
+            .queue-section,
+            .lyrics-section,
+            .settings-section,
+            .search-results,
+            .fullscreen-player {
+                border: none !important;
+                box-shadow: none !important;
+            }
+
+            /* Keep borders only on sliders */
+            input[type="range"] {
+                border: 1px solid rgba(147, 51, 234, 0.3);
+            }
+
+            /* Remove other decorative borders */
+            .player-controls,
+            .song-info,
+            .control-panel {
+                border: none !important;
+            }
+        }
+
+        /* Mobile styles for song sections */
+        @media screen and (max-width: 768px) {
+            .song-item,
+            .queue-item,
+            .search-result-item,
+            .playlist-item {
+                border: none !important;
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+
+            /* Keep the hover effect subtle */
+            .song-item:hover,
+            .queue-item:hover,
+            .search-result-item:hover,
+            .playlist-item:hover {
+                background: rgba(255, 255, 255, 0.05) !important;
+            }
+        }
+
+        /* Mobile styles for volume slider */
+        @media screen and (max-width: 768px) {
+            .volume-slider {
+                width: 80px !important;  /* Reduce width */
+                max-width: 80px !important;
+            }
+
+            .volume-control {
+                gap: 5px !important;  /* Reduce space between volume icon and slider */
+            }
+
+            /* Adjust the volume container to take less space */
+            .player-controls > div:last-child {
+                flex: 0.5 !important;
             }
         }
     </style>

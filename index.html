@@ -300,6 +300,11 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.5s ease forwards;
+            border: 1px solid rgba(147, 51, 234, 0.15);
+            border-radius: 20px;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            box-shadow: inset 0 0 30px rgba(147, 51, 234, 0.05);
         }
 
         .playlist-section h2 {
@@ -331,7 +336,7 @@
         }
 
         .slider-container {
-            height: 280px; /* Increased height to accommodate text */
+            height: 280px;
             display: flex;
             gap: 1.5rem;
             padding: 1rem;
@@ -346,14 +351,10 @@
             margin: 0.5rem 0;
             position: relative;
             cursor: grab;
-        }
-
-        .slider-container:active {
-            cursor: grabbing;
-        }
-
-        .slider-container::-webkit-scrollbar {
-            display: none;
+            border: 2px solid rgba(147, 51, 234, 0.3);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 0 20px rgba(147, 51, 234, 0.1);
         }
 
         .song-slide {
@@ -377,11 +378,15 @@
             transform-style: preserve-3d;
             perspective: 1000px;
             margin: 0.5rem;
+            border: 2px solid rgba(147, 51, 234, 0.2);
+            background: linear-gradient(to bottom, rgba(40, 40, 40, 0.95), rgba(30, 30, 30, 0.95));
         }
 
-        .song-slide:active {
-            transform: translateY(-5px) scale(1.02) rotateX(10deg) rotateY(10deg);
+        .song-slide:hover {
+            border-color: rgba(147, 51, 234, 0.6);
+            transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(147, 51, 234, 0.3);
+            background: linear-gradient(to bottom, rgba(45, 45, 45, 0.95), rgba(35, 35, 35, 0.95));
         }
 
         .song-slide img {
@@ -390,9 +395,46 @@
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
+            border: 1px solid rgba(147, 51, 234, 0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .song-slide:hover img {
+            transform: scale(1.02);
+            border-color: rgba(147, 51, 234, 0.4);
+            box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4);
+        }
+
+        .slider-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border: 2px solid rgba(147, 51, 234, 0.3);
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(34, 197, 94, 0.2));
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            z-index: 10;
+            font-size: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slider-nav-btn:hover {
+            border-color: rgba(147, 51, 234, 0.6);
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.3), rgba(34, 197, 94, 0.3));
+            box-shadow: 0 6px 20px rgba(147, 51, 234, 0.3);
+            transform: translateY(-50%) scale(1.1);
         }
 
         .song-slide:active img {

@@ -2275,6 +2275,34 @@
                 flex: 0.5 !important;
             }
         }
+
+        // Add this CSS before the closing style tag
+        .volume-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(40, 40, 40, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            border-radius: 12px;
+            color: white;
+            font-size: 2rem;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .volume-indicator.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
     </style>
 </head>
 <body>
@@ -3914,6 +3942,76 @@
             }
             // ... rest of existing code ...
         }
+
+        let volumeTimeout;
+        const volumeIndicator = document.querySelector('.volume-indicator');
+        const volumeIcon = volumeIndicator.querySelector('i');
+        const volumeText = volumeIndicator.querySelector('span');
+
+        function updateVolumeIcon(volume) {
+            volumeIcon.className = 'fas';
+            if (volume === 0) {
+                volumeIcon.className += ' fa-volume-mute';
+            } else if (volume < 0.3) {
+                volumeIcon.className += ' fa-volume-off';
+            } else if (volume < 0.7) {
+                volumeIcon.className += ' fa-volume-down';
+            } else {
+                volumeIcon.className += ' fa-volume-up';
+            }
+        }
+
+        function showVolumeIndicator(volume) {
+            const percentage = Math.round(volume * 100);
+            volumeText.textContent = `${percentage}%`;
+            updateVolumeIcon(volume);
+            volumeIndicator.classList.add('show');
+            
+            clearTimeout(volumeTimeout);
+            volumeTimeout = setTimeout(() => {
+                volumeIndicator.classList.remove('show');
+            }, 1500);
+        }
+
+        function handleVolumeScroll(event) {
+            if (!document.fullscreenElement) return;
+            
+            event.preventDefault();
+            const audio = document.getElementById('audio');
+            const delta = event.deltaY;
+            const volumeChange = 0.05; // 5% volume change per scroll
+            
+            if (delta < 0) {
+                // Scrolling up - increase volume
+                audio.volume = Math.min(1, audio.volume + volumeChange);
+            } else {
+                // Scrolling down - decrease volume
+                audio.volume = Math.max(0, audio.volume - volumeChange);
+            }
+            
+            // Update volume slider if it exists
+            const volumeSlider = document.querySelector('.volume-controls input[type="range"]');
+            if (volumeSlider) {
+                volumeSlider.value = audio.volume;
+            }
+            
+            showVolumeIndicator(audio.volume);
+        }
+
+        // Add scroll event listener when entering fullscreen
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                document.addEventListener('wheel', handleVolumeScroll, { passive: false });
+            } else {
+                document.removeEventListener('wheel', handleVolumeScroll);
+            }
+        });
     </script>
+
+    <!-- Add this HTML before the closing body tag -->
+    <div class="volume-indicator">
+        <i class="fas fa-volume-up"></i>
+        <span>100%</span>
+    </div>
 </body>
 </html>

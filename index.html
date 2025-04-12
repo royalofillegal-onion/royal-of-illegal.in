@@ -6,7 +6,6 @@
     <title>RoyalStar Music</title>
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="security.js"></script>
     <style>
         * {
             margin: 0;
@@ -814,47 +813,56 @@
         }
 
         .volume-controls input[type="range"] {
-            width: 50px;
-            height: 4px;
             -webkit-appearance: none;
-            background: #4f4f4f;
-            border-radius: 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            transform-style: preserve-3d;
-            perspective: 1000px;
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            outline: none;
+            padding: 0;
+            margin: 0;
         }
 
-        .volume-controls input[type="range"]:hover {
-            height: 6px;
-            background: linear-gradient(90deg, #9333ea, #22c55e);
-        }
-
-        .volume-controls input[type="range"]:active {
-            transform: rotateX(5deg);
-            height: 6px;
-            background: linear-gradient(90deg, #9333ea, #22c55e);
-        }
-
+        /* Make the slider thumb bigger and more touch-friendly */
         .volume-controls input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
-            background: linear-gradient(45deg, #9333ea, #22c55e);
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #9333ea;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(147, 51, 234, 0.4);
+            transition: all 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.5);
         }
 
-        .volume-controls input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.5);
-            box-shadow: 0 0 15px rgba(147, 51, 234, 0.6);
+        /* Add styles for Firefox */
+        .volume-controls input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: #9333ea;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.5);
         }
 
-        .volume-controls input[type="range"]::-webkit-slider-thumb:active {
-            transform: scale(1.5) rotateX(5deg);
-            box-shadow: 0 0 15px rgba(147, 51, 234, 0.6);
+        /* Add touch-friendly padding around the slider */
+        @media (max-width: 768px) {
+            .volume-controls input[type="range"] {
+                height: 10px;
+                margin: 10px 0;
+            }
+
+            .volume-controls input[type="range"]::-webkit-slider-thumb {
+                width: 28px;
+                height: 28px;
+            }
+
+            .volume-controls input[type="range"]::-moz-range-thumb {
+                width: 28px;
+                height: 28px;
+            }
         }
 
         .volume-controls i {

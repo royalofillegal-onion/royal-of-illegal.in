@@ -3864,6 +3864,83 @@
             }
         });
         // ... existing code ...
+
+        // ... existing code ...
+        let touchStartY = 0;
+        let lastTouchTime = 0;
+
+        function handleVolumeChange(increase) {
+            const audio = document.getElementById('audio');
+            const volumeSlider = document.querySelector('.volume-controls input[type="range"]');
+            const volumeChange = 0.05; // 5% volume change
+
+            if (increase) {
+                audio.volume = Math.min(1, audio.volume + volumeChange);
+            } else {
+                audio.volume = Math.max(0, audio.volume - volumeChange);
+            }
+
+            // Update volume slider
+            if (volumeSlider) {
+                volumeSlider.value = audio.volume;
+            }
+
+            // Show volume indicator
+            updateVolumeIndicator(audio.volume);
+        }
+
+        function handleFullscreenVolumeScroll(event) {
+            if (!document.fullscreenElement) return;
+            
+            event.preventDefault();
+            const delta = event.deltaY;
+            handleVolumeChange(delta < 0);
+        }
+
+        function handleFullscreenTouchStart(event) {
+            if (!document.fullscreenElement) return;
+            touchStartY = event.touches[0].clientY;
+            lastTouchTime = Date.now();
+        }
+
+        function handleFullscreenTouchMove(event) {
+            if (!document.fullscreenElement) return;
+            
+            const currentY = event.touches[0].clientY;
+            const deltaY = touchStartY - currentY;
+            const currentTime = Date.now();
+            
+            // Only process if enough time has passed since last update (throttle)
+            if (currentTime - lastTouchTime > 100 && Math.abs(deltaY) > 10) {
+                handleVolumeChange(deltaY > 0);
+                touchStartY = currentY;
+                lastTouchTime = currentTime;
+            }
+            
+            // Prevent default scrolling behavior
+            event.preventDefault();
+        }
+
+        // Add event listeners when entering fullscreen
+        document.addEventListener('fullscreenchange', () => {
+            const fullscreenElement = document.fullscreenElement;
+            const playerContainer = document.querySelector('.fullscreen-player');
+            
+            if (fullscreenElement) {
+                // Mouse wheel events
+                document.addEventListener('wheel', handleFullscreenVolumeScroll, { passive: false });
+                
+                // Touch events
+                playerContainer.addEventListener('touchstart', handleFullscreenTouchStart, { passive: true });
+                playerContainer.addEventListener('touchmove', handleFullscreenTouchMove, { passive: false });
+            } else {
+                // Remove all event listeners
+                document.removeEventListener('wheel', handleFullscreenVolumeScroll);
+                playerContainer.removeEventListener('touchstart', handleFullscreenTouchStart);
+                playerContainer.removeEventListener('touchmove', handleFullscreenTouchMove);
+            }
+        });
+        // ... existing code ...
     </script>
 </body>
 </html>

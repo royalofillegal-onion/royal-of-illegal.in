@@ -2187,6 +2187,111 @@
             border-color: rgba(147, 51, 234, 0.8);
             box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
         }
+
+        .volume-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.85);
+            padding: 20px 30px;
+            border-radius: 15px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 9999;
+            border: 2px solid rgba(147, 51, 234, 0.6);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .volume-indicator i {
+            color: rgb(147, 51, 234);
+            font-size: 1.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .volume-indicator span {
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 500;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .volume-direction {
+            color: white !important;
+            margin-left: 10px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        // ... existing code ...
+
+        function handleVolumeChange(increase) {
+            const audio = document.getElementById('audio');
+            const volumeSlider = document.querySelector('.volume-controls input[type="range"]');
+            const volumeChange = 0.03;
+            const oldVolume = audio.volume;
+
+            let newVolume;
+            if (increase) {
+                newVolume = Math.min(1, audio.volume + volumeChange);
+            } else {
+                newVolume = Math.max(0, audio.volume - volumeChange);
+            }
+
+            // Only update if volume actually changed
+            if (newVolume !== oldVolume) {
+                audio.volume = newVolume;
+                
+                if (volumeSlider) {
+                    volumeSlider.value = newVolume;
+                }
+
+                // Show volume indicator with direction
+                const volumeIndicator = document.querySelector('.volume-indicator');
+                const volumeText = volumeIndicator.querySelector('span');
+                const directionIcon = volumeIndicator.querySelector('.volume-direction');
+                
+                volumeText.textContent = `${Math.round(newVolume * 100)}%`;
+                directionIcon.className = `fas ${increase ? 'fa-arrow-up' : 'fa-arrow-down'} volume-direction`;
+                
+                // Show the indicator
+                volumeIndicator.style.display = 'flex';
+                
+                // Update volume icon based on level
+                const volumeIcon = volumeIndicator.querySelector('i:not(.volume-direction)');
+                if (newVolume === 0) {
+                    volumeIcon.className = 'fas fa-volume-mute';
+                } else if (newVolume < 0.5) {
+                    volumeIcon.className = 'fas fa-volume-down';
+                } else {
+                    volumeIcon.className = 'fas fa-volume-up';
+                }
+
+                // Clear existing timeout and set new one
+                if (window.volumeTimeout) {
+                    clearTimeout(window.volumeTimeout);
+                }
+                window.volumeTimeout = setTimeout(() => {
+                    volumeIndicator.style.display = 'none';
+                }, 1500);
+            }
+        }
+
+        // Add this to your HTML structure
+        <div class="volume-indicator">
+            <i class="fas fa-volume-up"></i>
+            <span>100%</span>
+            <i class="fas fa-arrow-up volume-direction"></i>
+        </div>
         // ... existing code ...
     </style>
 </head>
@@ -2328,6 +2433,12 @@
             <i class="fas fa-volume-up"></i>
             <input type="range" id="volume" min="0" max="100" value="100" aria-label="Volume Control">
         </div>
+    </div>
+
+    <div class="volume-indicator">
+        <i class="fas fa-volume-up"></i>
+        <span>100%</span>
+        <i class="fas fa-arrow-up volume-direction"></i>
     </div>
 
     <script>
@@ -3872,72 +3983,84 @@
         function handleVolumeChange(increase) {
             const audio = document.getElementById('audio');
             const volumeSlider = document.querySelector('.volume-controls input[type="range"]');
-            const volumeChange = 0.05; // 5% volume change
+            const volumeChange = 0.03; // Smaller change for smoother control
 
+            // Get current volume
+            let newVolume;
             if (increase) {
-                audio.volume = Math.min(1, audio.volume + volumeChange);
+                newVolume = Math.min(1, audio.volume + volumeChange);
             } else {
-                audio.volume = Math.max(0, audio.volume - volumeChange);
+                newVolume = Math.max(0, audio.volume - volumeChange);
             }
 
+            // Apply new volume
+            audio.volume = newVolume;
+            
             // Update volume slider
             if (volumeSlider) {
-                volumeSlider.value = audio.volume;
+                volumeSlider.value = newVolume;
             }
 
             // Show volume indicator
-            updateVolumeIndicator(audio.volume);
+            updateVolumeIndicator(newVolume);
         }
 
         function handleFullscreenVolumeScroll(event) {
             if (!document.fullscreenElement) return;
-            
             event.preventDefault();
-            const delta = event.deltaY;
-            handleVolumeChange(delta < 0);
-        }
-
-        function handleFullscreenTouchStart(event) {
-            if (!document.fullscreenElement) return;
-            touchStartY = event.touches[0].clientY;
-            lastTouchTime = Date.now();
+            handleVolumeChange(event.deltaY < 0);
         }
 
         function handleFullscreenTouchMove(event) {
             if (!document.fullscreenElement) return;
+            event.preventDefault();
             
             const currentY = event.touches[0].clientY;
             const deltaY = touchStartY - currentY;
-            const currentTime = Date.now();
             
-            // Only process if enough time has passed since last update (throttle)
-            if (currentTime - lastTouchTime > 100 && Math.abs(deltaY) > 10) {
+            if (Math.abs(deltaY) > 5) { // Reduced threshold for more responsive control
                 handleVolumeChange(deltaY > 0);
                 touchStartY = currentY;
-                lastTouchTime = currentTime;
             }
-            
-            // Prevent default scrolling behavior
-            event.preventDefault();
         }
 
-        // Add event listeners when entering fullscreen
-        document.addEventListener('fullscreenchange', () => {
-            const fullscreenElement = document.fullscreenElement;
+        // Initialize fullscreen controls
+        function initializeFullscreenControls() {
             const playerContainer = document.querySelector('.fullscreen-player');
-            
-            if (fullscreenElement) {
-                // Mouse wheel events
-                document.addEventListener('wheel', handleFullscreenVolumeScroll, { passive: false });
-                
-                // Touch events
-                playerContainer.addEventListener('touchstart', handleFullscreenTouchStart, { passive: true });
-                playerContainer.addEventListener('touchmove', handleFullscreenTouchMove, { passive: false });
+            if (!playerContainer) return;
+
+            // Remove any existing listeners first
+            document.removeEventListener('wheel', handleFullscreenVolumeScroll);
+            playerContainer.removeEventListener('touchstart', handleFullscreenTouchStart);
+            playerContainer.removeEventListener('touchmove', handleFullscreenTouchMove);
+
+            // Add the event listeners
+            document.addEventListener('wheel', handleFullscreenVolumeScroll, { passive: false });
+            playerContainer.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+            playerContainer.addEventListener('touchmove', handleFullscreenTouchMove, { passive: false });
+        }
+
+        // Add fullscreen change listener
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                initializeFullscreenControls();
             } else {
-                // Remove all event listeners
+                // Remove listeners when exiting fullscreen
                 document.removeEventListener('wheel', handleFullscreenVolumeScroll);
-                playerContainer.removeEventListener('touchstart', handleFullscreenTouchStart);
-                playerContainer.removeEventListener('touchmove', handleFullscreenTouchMove);
+                const playerContainer = document.querySelector('.fullscreen-player');
+                if (playerContainer) {
+                    playerContainer.removeEventListener('touchstart', handleFullscreenTouchStart);
+                    playerContainer.removeEventListener('touchmove', handleFullscreenTouchMove);
+                }
+            }
+        });
+
+        // Initialize controls when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.fullscreenElement) {
+                initializeFullscreenControls();
             }
         });
         // ... existing code ...

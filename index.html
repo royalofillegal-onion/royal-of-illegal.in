@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RoyalStar Music</title>
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dykzuljjr/image/upload/v1743437143/IMG_20250331_112437_oc200m.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -93,7 +92,6 @@
             border: none;
             width: 100%;
             background: rgba(255, 255, 255, 0.1);
-            -webkit-backdrop-filter: blur(5px);
             backdrop-filter: blur(5px);
             font-size: 1rem;
             transition: all 0.3s ease;
@@ -124,7 +122,6 @@
             background: rgba(40, 40, 40, 0.98);
             z-index: 1000;
             overflow-y: auto;
-            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             display: none;
             max-height: calc(100vh - 70px);
@@ -290,11 +287,11 @@
         }
 
         main {
-            margin-top: 20px;
+            margin-top: 70px;
             padding: 1rem;
             margin-bottom: 80px;
-            position: relative;
-            z-index: 0;
+            height: calc(100vh - 150px);
+            overflow-y: auto;
         }
 
         .playlist-section {
@@ -303,6 +300,11 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.5s ease forwards;
+            border: 1px solid rgba(147, 51, 234, 0.15);
+            border-radius: 20px;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            box-shadow: inset 0 0 30px rgba(147, 51, 234, 0.05);
         }
 
         .playlist-section h2 {
@@ -334,7 +336,7 @@
         }
 
         .slider-container {
-            height: 280px; /* Increased height to accommodate text */
+            height: 280px;
             display: flex;
             gap: 1.5rem;
             padding: 1rem;
@@ -349,14 +351,10 @@
             margin: 0.5rem 0;
             position: relative;
             cursor: grab;
-        }
-
-        .slider-container:active {
-            cursor: grabbing;
-        }
-
-        .slider-container::-webkit-scrollbar {
-            display: none;
+            border: 2px solid rgba(147, 51, 234, 0.3);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 0 20px rgba(147, 51, 234, 0.1);
         }
 
         .song-slide {
@@ -380,11 +378,15 @@
             transform-style: preserve-3d;
             perspective: 1000px;
             margin: 0.5rem;
+            border: 2px solid rgba(147, 51, 234, 0.2);
+            background: linear-gradient(to bottom, rgba(40, 40, 40, 0.95), rgba(30, 30, 30, 0.95));
         }
 
-        .song-slide:active {
-            transform: translateY(-5px) scale(1.02) rotateX(10deg) rotateY(10deg);
+        .song-slide:hover {
+            border-color: rgba(147, 51, 234, 0.6);
+            transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(147, 51, 234, 0.3);
+            background: linear-gradient(to bottom, rgba(45, 45, 45, 0.95), rgba(35, 35, 35, 0.95));
         }
 
         .song-slide img {
@@ -393,9 +395,46 @@
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
+            border: 1px solid rgba(147, 51, 234, 0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .song-slide:hover img {
+            transform: scale(1.02);
+            border-color: rgba(147, 51, 234, 0.4);
+            box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4);
+        }
+
+        .slider-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border: 2px solid rgba(147, 51, 234, 0.3);
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(34, 197, 94, 0.2));
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            z-index: 10;
+            font-size: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slider-nav-btn:hover {
+            border-color: rgba(147, 51, 234, 0.6);
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.3), rgba(34, 197, 94, 0.3));
+            box-shadow: 0 6px 20px rgba(147, 51, 234, 0.3);
+            transform: translateY(-50%) scale(1.1);
         }
 
         .song-slide:active img {
@@ -531,7 +570,6 @@
             bottom: 0;
             width: 100%;
             background: rgba(40, 40, 40, 0.9);
-            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             height: 70px;
             display: grid;
@@ -765,81 +803,66 @@
         .volume-controls {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .volume-controls:hover {
+            transform: scale(1.1) translateX(-5px);
         }
 
         .volume-controls input[type="range"] {
             -webkit-appearance: none;
-            appearance: none;
-            width: 60px; /* Decreased from 100% */
-            height: 4px; /* Decreased from 6px */
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(147, 51, 234, 0.5); /* Decreased border width */
-            border-radius: 4px; /* Decreased border radius */
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
             outline: none;
-            transition: all 0.3s ease;
+            padding: 0;
+            margin: 0;
         }
 
-        @media (max-width: 768px) {
-            .volume-controls input[type="range"] {
-                width: 40px; /* Even smaller on mobile */
-            }
-        }
-
-        .volume-controls input[type="range"]:hover {
-            border-color: rgba(147, 51, 234, 0.8);
-            box-shadow: 0 0 10px rgba(147, 51, 234, 0.3);
-        }
-
-        .volume-controls input[type="range"]:active {
-            transform: rotateX(5deg);
-            height: 6px;
-            background: linear-gradient(90deg, #9333ea, #22c55e);
-        }
-
+        /* Make the slider thumb bigger and more touch-friendly */
         .volume-controls input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 12px; /* Decreased from 16px */
-            height: 12px; /* Decreased from 16px */
-            background: rgb(147, 51, 234);
-            border: 1px solid rgba(255, 255, 255, 0.8); /* Decreased border width */
+            width: 24px;
+            height: 24px;
+            background: #9333ea;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.5);
         }
 
+        /* Add styles for Firefox */
         .volume-controls input[type="range"]::-moz-range-thumb {
-            width: 12px; /* Decreased from 16px */
-            height: 12px; /* Decreased from 16px */
-            background: rgb(147, 51, 234);
-            border: 1px solid rgba(255, 255, 255, 0.8); /* Decreased border width */
+            width: 24px;
+            height: 24px;
+            background: #9333ea;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.5);
         }
 
-        .volume-controls input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            background: rgb(167, 71, 254);
-            box-shadow: 0 0 15px rgba(147, 51, 234, 0.5);
-        }
+        /* Add touch-friendly padding around the slider */
+        @media (max-width: 768px) {
+            .volume-controls input[type="range"] {
+                height: 10px;
+                margin: 10px 0;
+            }
 
-        .volume-controls input[type="range"]::-moz-range-thumb:hover {
-            transform: scale(1.2);
-            background: rgb(167, 71, 254);
-            box-shadow: 0 0 15px rgba(147, 51, 234, 0.5);
-        }
+            .volume-controls input[type="range"]::-webkit-slider-thumb {
+                width: 28px;
+                height: 28px;
+            }
 
-        /* Active state */
-        .volume-controls input[type="range"]:active::-webkit-slider-thumb {
-            transform: scale(1.1);
-            background: rgb(187, 91, 254);
-        }
-
-        .volume-controls input[type="range"]:active::-moz-range-thumb {
-            transform: scale(1.1);
-            background: rgb(187, 91, 254);
+            .volume-controls input[type="range"]::-moz-range-thumb {
+                width: 28px;
+                height: 28px;
+            }
         }
 
         .volume-controls i {
@@ -907,7 +930,6 @@
             z-index: 1001;
             width: 90%;
             max-width: 500px;
-            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(147, 51, 234, 0.3);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -1266,7 +1288,6 @@
             background: rgba(18, 18, 18, 0.95);
             z-index: 1000;
             overflow-y: auto;
-            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             transform: translateY(-20px);
             opacity: 0;
@@ -1296,7 +1317,6 @@
             left: 0;
             width: 100%;
             background: rgba(40, 40, 40, 0.95);
-            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             z-index: 1001;
             transform: translateY(0);
@@ -1346,7 +1366,6 @@
             justify-content: space-between;
             align-items: center;
             z-index: 1001;
-            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(147, 51, 234, 0.3);
         }
@@ -1629,7 +1648,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
 
@@ -1725,7 +1743,6 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             z-index: 2001;
         }
@@ -1814,8 +1831,6 @@
             align-items: center;
             justify-content: center;
             padding: 2rem;
-            -webkit-backdrop-filter: blur(5px);
-            backdrop-filter: blur(5px);
         }
 
         .fullscreen-player.active {
@@ -2179,960 +2194,6 @@
                 gap: 10px;
             }
         }
-
-        .slide-item {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 10px;
-            flex-shrink: 0;
-            cursor: pointer;
-            border: 2px solid rgba(147, 51, 234, 0.5);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .slide-item:hover {
-            transform: translateY(-5px);
-            border-color: rgba(147, 51, 234, 0.8);
-            box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
-        }
-
-        .volume-indicator {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.85);
-            padding: 20px 30px;
-            border-radius: 15px;
-            display: none;
-            align-items: center;
-            gap: 15px;
-            z-index: 9999;
-            border: 2px solid rgba(147, 51, 234, 0.6);
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .volume-indicator i {
-            color: rgb(147, 51, 234);
-            font-size: 1.8rem;
-            transition: color 0.3s ease;
-        }
-
-        .volume-indicator span {
-            color: white;
-            font-size: 1.4rem;
-            font-weight: 500;
-            min-width: 70px;
-            text-align: center;
-        }
-
-        .volume-direction {
-            color: white !important;
-            margin-left: 10px;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        // ... existing code ...
-
-        function handleVolumeChange(increase) {
-            const audio = document.getElementById('audio');
-            const volumeSlider = document.querySelector('.volume-controls input[type="range"]');
-            const volumeChange = 0.03;
-            const oldVolume = audio.volume;
-
-            let newVolume;
-            if (increase) {
-                newVolume = Math.min(1, audio.volume + volumeChange);
-            } else {
-                newVolume = Math.max(0, audio.volume - volumeChange);
-            }
-
-            // Only update if volume actually changed
-            if (newVolume !== oldVolume) {
-                audio.volume = newVolume;
-                
-                if (volumeSlider) {
-                    volumeSlider.value = newVolume;
-                }
-
-                // Show volume indicator with direction
-                const volumeIndicator = document.querySelector('.volume-indicator');
-                const volumeText = volumeIndicator.querySelector('span');
-                const directionIcon = volumeIndicator.querySelector('.volume-direction');
-                
-                volumeText.textContent = `${Math.round(newVolume * 100)}%`;
-                directionIcon.className = `fas ${increase ? 'fa-arrow-up' : 'fa-arrow-down'} volume-direction`;
-                
-                // Show the indicator
-                volumeIndicator.style.display = 'flex';
-                
-                // Update volume icon based on level
-                const volumeIcon = volumeIndicator.querySelector('i:not(.volume-direction)');
-                if (newVolume === 0) {
-                    volumeIcon.className = 'fas fa-volume-mute';
-                } else if (newVolume < 0.5) {
-                    volumeIcon.className = 'fas fa-volume-down';
-                } else {
-                    volumeIcon.className = 'fas fa-volume-up';
-                }
-
-                // Clear existing timeout and set new one
-                if (window.volumeTimeout) {
-                    clearTimeout(window.volumeTimeout);
-                }
-                window.volumeTimeout = setTimeout(() => {
-                    volumeIndicator.style.display = 'none';
-                }, 1500);
-            }
-        }
-
-        // Add this to your HTML structure
-        <div class="volume-indicator">
-            <i class="fas fa-volume-up"></i>
-            <span>100%</span>
-            <i class="fas fa-arrow-up volume-direction"></i>
-        </div>
-        // ... existing code ...
-
-        .banner-container {
-            width: calc(100% - 2rem);
-            max-width: 1200px;
-            height: 50vh; /* Half of viewport height */
-            margin: 80px auto 30px auto;
-            position: relative;
-            overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(147, 51, 234, 0.2);
-            border: 2px solid rgba(147, 51, 234, 0.5);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .banner-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(147, 51, 234, 0.3);
-        }
-
-        .banner-slide {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            -webkit-backdrop-filter: blur(5px);
-            backdrop-filter: blur(5px);
-        }
-
-        .banner-image {
-            width: 50%;
-            height: 100%;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .banner-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: all 0.3s ease;
-        }
-
-        .banner-container:hover .banner-image img {
-            transform: scale(1.05);
-        }
-
-        .banner-image::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, 
-                rgba(0, 0, 0, 0.7) 0%,
-                rgba(0, 0, 0, 0.5) 50%,
-                rgba(0, 0, 0, 0.7) 100%
-            );
-            z-index: 1;
-        }
-
-        @media (max-width: 768px) {
-            .banner-container {
-                height: 70vh;
-                margin: 60px auto 20px auto;
-            }
-
-            .banner-slide {
-                flex-direction: column;
-            }
-
-            .banner-image {
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                top: 0;
-                left: 0;
-            }
-
-            .banner-content {
-                width: 100%;
-                height: 100%;
-                padding: 20px;
-                text-align: center;
-                background: transparent;
-                position: relative;
-                z-index: 2;
-            }
-
-            .banner-content h2 {
-                font-size: 2rem;
-                color: #ffffff;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-                margin-bottom: 10px;
-            }
-
-            .banner-content span {
-                font-size: 2.5rem;
-                color: #ffffff;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-            }
-
-            .banner-content p {
-                font-size: 1rem;
-                color: #ffffff;
-                text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
-                margin-bottom: 20px;
-                line-height: 1.6;
-            }
-        }
-
-        .banner-content {
-            width: 50%;
-            padding: 40px;
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .banner-content h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #9333ea, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .banner-content p {
-            font-size: 1.2rem;
-            color: #fff;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .banner-icons {
-            display: flex;
-            gap: 20px;
-        }
-
-        .banner-icons i {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(45deg, #9333ea, #22c55e);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .banner-icons i:hover {
-            transform: scale(1.1) rotate(360deg);
-            box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
-        }
-
-        /* Tablet Styles */
-        @media (max-width: 1024px) {
-            .banner-container {
-                height: 50vh;
-                margin: 70px auto 20px auto;
-            }
-
-            .banner-content {
-                padding: 30px;
-            }
-
-            .banner-content h2 {
-                font-size: 2rem;
-            }
-
-            .banner-content p {
-                font-size: 1rem;
-            }
-
-            .banner-icons i {
-                width: 40px;
-                height: 40px;
-                font-size: 1.1rem;
-            }
-        }
-
-        /* Mobile Styles */
-        @media (max-width: 768px) {
-            .banner-container {
-                height: 50vh;
-                margin: 60px auto 20px auto;
-            }
-
-            .banner-slide {
-                flex-direction: column;
-            }
-
-            .banner-image,
-            .banner-content {
-                width: 100%;
-                height: 50%;
-            }
-
-            .banner-content {
-            padding: 20px;
-                text-align: center;
-            }
-
-            .banner-content h2 {
-                font-size: 1.5rem;
-                margin-bottom: 10px;
-            }
-
-            .banner-content p {
-                font-size: 0.9rem;
-                margin-bottom: 15px;
-            }
-
-            .banner-icons {
-                justify-content: center;
-                gap: 15px;
-            }
-
-            .banner-icons i {
-                width: 35px;
-                height: 35px;
-                font-size: 1rem;
-            }
-        }
-
-        /* Small Mobile Styles */
-        @media (max-width: 480px) {
-            .banner-container {
-                width: calc(100% - 1rem);
-                height: 50vh;
-                margin: 50px auto 20px auto;
-                border-width: 1px;
-            }
-
-            .banner-content h2 {
-                font-size: 1.2rem;
-            }
-
-            .banner-content p {
-                font-size: 0.8rem;
-            }
-
-            .banner-icons i {
-                width: 30px;
-                height: 30px;
-                font-size: 0.9rem;
-            }
-        }
-
-        /* New Banner Design */
-        .banner-container {
-            width: calc(100% - 2rem);
-            max-width: 1400px;
-            height: 50vh; /* Half of viewport height */
-            min-height: 400px; /* Minimum height */
-            margin: 80px auto 30px auto;
-            position: relative;
-            overflow: hidden;
-            border-radius: 15px;
-            box-shadow: 0 4px 25px rgba(147, 51, 234, 0.3);
-            border: 2px solid rgba(147, 51, 234, 0.6);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .banner-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(147, 51, 234, 0.4);
-        }
-
-        .banner-slide {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            -webkit-backdrop-filter: blur(8px);
-            backdrop-filter: blur(8px);
-        }
-
-        .banner-image {
-            width: 60%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .banner-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            transition: transform 0.5s ease;
-            max-height: 100%;
-            max-width: 100%;
-        }
-
-        @media (min-width: 1200px) {
-            .banner-image img {
-                object-fit: cover;
-            }
-        }
-
-        @media (max-width: 991px) {
-            .banner-image img {
-                object-fit: contain;
-                max-height: 90%;
-                width: auto;
-            }
-        }
-
-        @media (max-width: 767px) {
-            .banner-image {
-                width: 100%;
-                height: 60%;
-            }
-            .banner-image img {
-                max-width: 90%;
-                height: auto;
-            }
-        }
-
-        .banner-content {
-            width: 40%;
-            padding: 40px;
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(34, 197, 94, 0.1));
-        }
-
-        .banner-content h2 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            line-height: 1.2;
-            background: linear-gradient(45deg, #9333ea, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
-        }
-
-        .banner-content span {
-            display: block;
-            font-size: 3.5rem;
-            font-weight: bold;
-        }
-
-        .banner-content p {
-            font-size: 1.2rem;
-            color: #fff;
-            margin-bottom: 30px;
-            line-height: 1.6;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .banner-icons {
-            display: flex;
-            gap: 20px;
-        }
-
-        .banner-icons a {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(45deg, #9333ea, #22c55e);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3);
-        }
-
-        .banner-icons a:hover {
-            transform: scale(1.1) rotate(360deg);
-            box-shadow: 0 6px 25px rgba(147, 51, 234, 0.5);
-        }
-
-        /* Laptop Styles */
-        @media (min-width: 1024px) and (max-height: 768px) {
-            .banner-container {
-                height: 60vh;
-            }
-        }
-
-        /* Tablet Styles */
-        @media (max-width: 1024px) {
-            .banner-container {
-                height: 50vh;
-                margin: 70px auto 20px auto;
-            }
-
-            .banner-content {
-                padding: 30px;
-        }
-
-        .banner-content h2 {
-            font-size: 2.5rem;
-            }
-
-            .banner-content span {
-                font-size: 3rem;
-            }
-
-            .banner-content p {
-                font-size: 1.1rem;
-            }
-
-            .banner-icons a {
-                width: 45px;
-                height: 45px;
-                font-size: 1.2rem;
-            }
-        }
-
-        /* Mobile Styles */
-        @media (max-width: 768px) {
-            .banner-container {
-                height: 70vh;
-                margin: 60px auto 20px auto;
-            }
-
-            .banner-slide {
-                flex-direction: column;
-            }
-
-            .banner-image {
-                width: 100%;
-                height: 50%;
-                flex-direction: row;
-            }
-
-            .banner-content {
-                width: 100%;
-                height: 50%;
-                padding: 20px;
-                text-align: center;
-                background: linear-gradient(180deg, rgba(147, 51, 234, 0.1), rgba(34, 197, 94, 0.1));
-            }
-
-            .banner-content h2 {
-                font-size: 2rem;
-            margin-bottom: 10px;
-            }
-
-            .banner-content span {
-                font-size: 2.5rem;
-        }
-
-        .banner-content p {
-                font-size: 1rem;
-                margin-bottom: 20px;
-            }
-
-            .banner-icons {
-                justify-content: center;
-                gap: 15px;
-            }
-
-            .banner-icons a {
-                width: 40px;
-                height: 40px
-            font-size: 1.1rem;
-            }
-        }
-
-        /* Small Mobile Styles */
-        @media (max-width: 480px) {
-            .banner-container {
-                width: calc(100% - 1rem);
-                height: 80vh;
-                margin: 50px auto 20px auto;
-                border-width: 1px;
-            }
-
-            .banner-content h2 {
-                font-size: 1.8rem;
-            }
-
-            .banner-content span {
-                font-size: 2.2rem;
-            }
-
-            .banner-content p {
-                font-size: 0.9rem;
-            }
-
-            .banner-icons a {
-                width: 35px;
-                height: 35px;
-                font-size: 1rem;
-            }
-        }
-
-        .banner-container {
-            width: calc(100% - 2rem);
-            max-width: 1400px;
-            height: 50vh; /* Half of viewport height */
-            min-height: 400px; /* Minimum height */
-            margin: 80px auto 30px auto;
-            position: relative;
-            overflow: hidden;
-            border-radius: 15px;
-            box-shadow: 0 4px 25px rgba(147, 51, 234, 0.3);
-            border: 2px solid rgba(147, 51, 234, 0.6);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .banner-slide {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            -webkit-backdrop-filter: blur(8px);
-            backdrop-filter: blur(8px);
-        }
-
-        .banner-image {
-            width: 60%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .banner-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            transition: transform 0.5s ease;
-            max-height: 100%;
-            max-width: 100%;
-        }
-
-        @media (min-width: 1200px) {
-            .banner-image img {
-                object-fit: cover;
-            }
-        }
-
-        @media (max-width: 991px) {
-            .banner-image img {
-                object-fit: contain;
-                max-height: 90%;
-                width: auto;
-            }
-        }
-
-        @media (max-width: 767px) {
-            .banner-image {
-                width: 100%;
-                height: 60%;
-            }
-            .banner-image img {
-                max-width: 90%;
-                height: auto;
-            }
-        }
-
-        .banner-content {
-            width: 40%;
-            padding: 40px;
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(34, 197, 94, 0.1));
-        }
-
-        .banner-content h2 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            line-height: 1.2;
-            background: linear-gradient(45deg, #9333ea, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
-        }
-
-        .banner-content span {
-            display: block;
-            font-size: 3.5rem;
-            font-weight: bold;
-        }
-
-        .banner-content p {
-            font-size: 1.2rem;
-            color: #fff;
-            margin-bottom: 30px;
-            line-height: 1.6;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .banner-icons {
-            display: flex;
-            gap: 20px;
-        }
-
-        .banner-icons a {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(45deg, #9333ea, #22c55e);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3);
-        }
-
-        .banner-icons a:hover {
-            transform: scale(1.1) rotate(360deg);
-            box-shadow: 0 6px 25px rgba(147, 51, 234, 0.5);
-        }
-
-        /* Responsive styles */
-        @media (max-width: 1024px) {
-            .banner-container {
-                height: 50vh;
-            }
-            .banner-content h2 {
-                font-size: 2.5rem;
-            }
-            .banner-content span {
-                font-size: 3rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .banner-slide {
-                flex-direction: column;
-            }
-            .banner-image, .banner-content {
-                width: 100%;
-                height: 50%;
-            }
-            .banner-content {
-                text-align: center;
-                padding: 20px;
-            }
-            .banner-icons {
-                justify-content: center;
-            }
-            .banner-content h2 {
-                font-size: 2rem;
-            }
-            .banner-content span {
-                font-size: 2.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .banner-container {
-                width: calc(100% - 1rem);
-                height: 80vh;
-                margin: 50px auto 20px auto;
-            }
-            .banner-content h2 {
-                font-size: 1.8rem;
-            }
-            .banner-content span {
-                font-size: 2.2rem;
-            }
-            .banner-content p {
-                font-size: 0.9rem;
-            }
-            .banner-icons a {
-                width: 40px;
-                height: 40px;
-                font-size: 1.1rem;
-            }
-        }
-
-        .banner-wrapper {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 15px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .banner-container {
-            width: 100%;
-            height: 400px; /* Default height for desktop */
-            position: relative;
-            overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(147, 51, 234, 0.2);
-            border: 2px solid rgba(147, 51, 234, 0.5);
-            background: rgba(255, 255, 255, 0.1);
-            -webkit-backdrop-filter: blur(10px); /* Safari support */
-            backdrop-filter: blur(10px);
-            margin-top: 90px;
-        }
-
-        .banner-slides-wrapper {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.5s ease;
-        }
-
-        .banner-slide {
-            min-width: 100%;
-            flex: 0 0 100%;
-            height: 100%;
-            display: flex;
-        }
-
-        /* Large screens (1200px and up) */
-        @media (min-width: 1200px) {
-            .banner-container {
-                height: 450px;
-            }
-        }
-
-        /* Medium screens (992px to 1199px) */
-        @media (max-width: 1199px) {
-            .banner-container {
-                height: 350px;
-                margin-top: 85px;
-            }
-        }
-
-        /* Tablets (768px to 991px) */
-        @media (max-width: 991px) {
-            .banner-container {
-                height: 300px;
-                margin-top: 80px;
-            }
-            .banner-wrapper {
-                padding: 0 10px;
-            }
-        }
-
-        /* Large phones (576px to 767px) */
-        @media (max-width: 767px) {
-            .banner-container {
-                height: 300px;
-                margin-top: 75px;
-            }
-            .banner-slide {
-                flex-direction: column;
-            }
-        }
-
-        /* Small phones (575px and below) */
-        @media (max-width: 575px) {
-            .banner-container {
-                height: 200px;
-                margin-top: 70px;
-                border-width: 1px;
-            }
-            .banner-wrapper {
-                padding: 0 8px;
-            }
-        }
-
-        /* Extra small phones (360px and below) */
-        @media (max-width: 360px) {
-            .banner-container {
-                height: 180px;
-                margin-top: 65px;
-            }
-        }
-
-        /* Landscape mode optimization */
-        @media (max-width: 991px) and (orientation: landscape) {
-            .banner-container {
-                height: 70vh;
-                max-height: 300px;
-            }
-        }
-
-        main {
-            margin-top: 20px;
-            padding: 1rem;
-            margin-bottom: 80px;
-            position: relative;
-            z-index: 0;
-        }
-
-        @media (max-width: 768px) {
-            .banner-container {
-                height: 250px;
-                margin-top: 80px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .banner-container {
-                height: 200px;
-                margin-top: 70px;
-            }
-        }
-
-        // ... existing code ...
     </style>
 </head>
 <body>
@@ -3140,7 +2201,7 @@
     <div class="full-screen-slider">
         <div class="full-screen-header">
             <h2>Now Playing</h2>
-            <button class="close-full-screen" title="Close fullscreen view" aria-label="Close fullscreen view">
+            <button class="close-full-screen">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -3150,15 +2211,9 @@
                 <div class="progress"></div>
             </div>
             <div class="full-screen-buttons">
-                <button id="full-screen-prev" title="Previous track" aria-label="Play previous track">
-                    <i class="fas fa-step-backward"></i>
-                </button>
-                <button id="full-screen-play-pause" title="Play or pause track" aria-label="Play or pause track">
-                    <i class="fas fa-play"></i>
-                </button>
-                <button id="full-screen-next" title="Next track" aria-label="Play next track">
-                    <i class="fas fa-step-forward"></i>
-                </button>
+                <button id="full-screen-prev"><i class="fas fa-step-backward"></i></button>
+                <button id="full-screen-play-pause"><i class="fas fa-play"></i></button>
+                <button id="full-screen-next"><i class="fas fa-step-forward"></i></button>
             </div>
         </div>
     </div>
@@ -3183,7 +2238,7 @@
                 <textarea id="feedbackText" name="feedback" placeholder="Share your thoughts with us..." required></textarea>
             </div>
             <div class="input-group">
-                <select id="feedbackRating" name="rating" required title="Rate your experience" aria-label="Rate your experience">
+                <select id="feedbackRating" name="rating" required>
                     <option value="">How would you Like This?</option>
                     <option value="5">Improve</option>
                     <option value="4">Better</option>
@@ -3216,56 +2271,6 @@
             </button>
         </div>
     </header>
-
-    <!-- New Banner Design -->
-    <div class="banner-wrapper">
-        <div class="banner-container">
-            <div class="banner-slides-wrapper">
-                <div class="banner-slide">
-                    <div class="banner-image">
-                        <img src="https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743873184/download_10_mpnm7m.jpg" alt="Music Banner 1">
-                    </div>
-                    <div class="banner-content">
-                        <h2>DISCOVER <span>MUSIC</span></h2>
-                        <p>Experience the best of Telugu music streaming. Your perfect soundtrack awaits!</p>
-                        <div class="banner-icons">
-                            <a href="#trending" title="Trending Songs"><i class="fas fa-fire"></i></a>
-                            <a href="#playlists" title="Featured Playlists"><i class="fas fa-list"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="banner-slide">
-                    <div class="banner-image">
-                        <img src="https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872399/download_6_jpspgu.jpg" alt="Music Banner 2">
-                    </div>
-                    <div class="banner-content">
-                        <h2>FEATURED <span>PLAYLISTS</span></h2>
-                        <p>Explore curated collections of the best Telugu hits and discover new favorites.</p>
-                        <div class="banner-icons">
-                            <a href="#new" title="New Releases"><i class="fas fa-music"></i></a>
-                            <a href="#top" title="Top Charts"><i class="fas fa-chart-line"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="banner-slide">
-                    <div class="banner-image">
-                        <img src="https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872530/download_7_fuc547.jpg" alt="Music Banner 3">
-                    </div>
-                    <div class="banner-content">
-                        <h2>TRENDING <span>NOW</span></h2>
-                        <p>Stay updated with the latest and most popular Telugu music tracks.</p>
-                        <div class="banner-icons">
-                            <a href="#artists" title="Top Artists"><i class="fas fa-microphone"></i></a>
-                            <a href="#albums" title="New Albums"><i class="fas fa-compact-disc"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Navigation buttons and dots will be added by JavaScript -->
-        </div>
-    </div>
 
     <main>
         <div class="playlist-section">
@@ -3329,12 +2334,6 @@
             <i class="fas fa-volume-up"></i>
             <input type="range" id="volume" min="0" max="100" value="100" aria-label="Volume Control">
         </div>
-    </div>
-
-    <div class="volume-indicator">
-        <i class="fas fa-volume-up"></i>
-        <span>100%</span>
-        <i class="fas fa-arrow-up volume-direction"></i>
     </div>
 
     <script>
@@ -4834,526 +3833,6 @@
             }
             // ... rest of existing code ...
         }
-
-        // ... existing code ...
-        function handleFullscreenVolumeScroll(event) {
-            if (!document.fullscreenElement) return;
-            
-            event.preventDefault();
-            const audio = document.getElementById('audio');
-            const volumeSlider = document.querySelector('.volume-controls input[type="range"]');
-            const delta = event.deltaY;
-            const volumeChange = 0.05; // 5% volume change per scroll
-            
-            if (delta < 0) {
-                // Scrolling up - increase volume
-                audio.volume = Math.min(1, audio.volume + volumeChange);
-            } else {
-                // Scrolling down - decrease volume
-                audio.volume = Math.max(0, audio.volume - volumeChange);
-            }
-            
-            // Update volume slider
-            if (volumeSlider) {
-                volumeSlider.value = audio.volume;
-            }
-            
-            // Show volume indicator
-            updateVolumeIndicator(audio.volume);
-        }
-
-        // Add scroll event listener when entering fullscreen
-        document.addEventListener('fullscreenchange', () => {
-            if (document.fullscreenElement) {
-                document.addEventListener('wheel', handleFullscreenVolumeScroll, { passive: false });
-            } else {
-                document.removeEventListener('wheel', handleFullscreenVolumeScroll);
-            }
-        });
-        // ... existing code ...
-
-        // ... existing code ...
-        let touchStartY = 0;
-        let lastTouchTime = 0;
-
-        function handleVolumeChange(increase) {
-            const audio = document.getElementById('audio');
-            const volumeSlider = document.querySelector('.volume-controls input[type="range"]');
-            const volumeChange = 0.03; // Smaller change for smoother control
-
-            // Get current volume
-            let newVolume;
-            if (increase) {
-                newVolume = Math.min(1, audio.volume + volumeChange);
-            } else {
-                newVolume = Math.max(0, audio.volume - volumeChange);
-            }
-
-            // Apply new volume
-            audio.volume = newVolume;
-            
-            // Update volume slider
-            if (volumeSlider) {
-                volumeSlider.value = newVolume;
-            }
-
-            // Show volume indicator
-            updateVolumeIndicator(newVolume);
-        }
-
-        function handleFullscreenVolumeScroll(event) {
-            if (!document.fullscreenElement) return;
-            event.preventDefault();
-            handleVolumeChange(event.deltaY < 0);
-        }
-
-        function handleFullscreenTouchMove(event) {
-            if (!document.fullscreenElement) return;
-            event.preventDefault();
-            
-            const currentY = event.touches[0].clientY;
-            const deltaY = touchStartY - currentY;
-            
-            if (Math.abs(deltaY) > 5) { // Reduced threshold for more responsive control
-                handleVolumeChange(deltaY > 0);
-                touchStartY = currentY;
-            }
-        }
-
-        // Initialize fullscreen controls
-        function initializeFullscreenControls() {
-            const playerContainer = document.querySelector('.fullscreen-player');
-            if (!playerContainer) return;
-
-            // Remove any existing listeners first
-            document.removeEventListener('wheel', handleFullscreenVolumeScroll);
-            playerContainer.removeEventListener('touchstart', handleFullscreenTouchStart);
-            playerContainer.removeEventListener('touchmove', handleFullscreenTouchMove);
-
-            // Add the event listeners
-            document.addEventListener('wheel', handleFullscreenVolumeScroll, { passive: false });
-            playerContainer.addEventListener('touchstart', (e) => {
-                touchStartY = e.touches[0].clientY;
-            }, { passive: true });
-            playerContainer.addEventListener('touchmove', handleFullscreenTouchMove, { passive: false });
-        }
-
-        // Add fullscreen change listener
-        document.addEventListener('fullscreenchange', () => {
-            if (document.fullscreenElement) {
-                initializeFullscreenControls();
-            } else {
-                // Remove listeners when exiting fullscreen
-                document.removeEventListener('wheel', handleFullscreenVolumeScroll);
-                const playerContainer = document.querySelector('.fullscreen-player');
-                if (playerContainer) {
-                    playerContainer.removeEventListener('touchstart', handleFullscreenTouchStart);
-                    playerContainer.removeEventListener('touchmove', handleFullscreenTouchMove);
-                }
-            }
-        });
-
-        // Initialize controls when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            if (document.fullscreenElement) {
-                initializeFullscreenControls();
-            }
-        });
-        // ... existing code ...
-
-        // Add banner auto-scroll functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            const bannerContainer = document.querySelector('.banner-container');
-            const slides = document.querySelectorAll('.banner-slide');
-            const dots = document.querySelectorAll('.nav-dot');
-            let currentSlide = 0;
-            const slideInterval = 2000; // 2 seconds between slides
-            let slideTimer;
-            let touchStartX = 0;
-            let touchEndX = 0;
-
-            // Initialize first slide
-            updateSlidePosition();
-
-            function updateSlidePosition() {
-                const slideWidth = slides[0].offsetWidth;
-                bannerContainer.scrollTo({
-                    left: slideWidth * currentSlide,
-                    behavior: 'smooth'
-                });
-                updateDots();
-            }
-
-            function updateDots() {
-                dots.forEach((dot, index) => {
-                    dot.classList.toggle('active', index === currentSlide);
-                });
-            }
-
-            function nextSlide() {
-                currentSlide = (currentSlide + 1) % slides.length;
-                updateSlidePosition();
-            }
-
-            function prevSlide() {
-                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-                updateSlidePosition();
-            }
-
-            function goToSlide(index) {
-                currentSlide = index;
-                updateSlidePosition();
-            }
-
-            function startSlideTimer() {
-                stopSlideTimer();
-                slideTimer = setInterval(nextSlide, slideInterval);
-            }
-
-            function stopSlideTimer() {
-                if (slideTimer) clearInterval(slideTimer);
-            }
-
-            // Touch events for mobile swipe
-            bannerContainer.addEventListener('touchstart', (e) => {
-                touchStartX = e.touches[0].clientX;
-                stopSlideTimer();
-            });
-
-            bannerContainer.addEventListener('touchmove', (e) => {
-                touchEndX = e.touches[0].clientX;
-            });
-
-            bannerContainer.addEventListener('touchend', () => {
-                const touchDiff = touchStartX - touchEndX;
-                if (Math.abs(touchDiff) > 50) { // Minimum swipe distance
-                    if (touchDiff > 0) {
-                        nextSlide();
-                    } else {
-                        prevSlide();
-                    }
-                }
-                startSlideTimer();
-            });
-
-            // Click events for navigation dots
-            dots.forEach((dot, index) => {
-                dot.addEventListener('click', () => {
-                    goToSlide(index);
-                    startSlideTimer();
-                });
-            });
-
-            // Pause on hover
-            bannerContainer.addEventListener('mouseenter', stopSlideTimer);
-            bannerContainer.addEventListener('mouseleave', startSlideTimer);
-
-            // Start auto-scroll
-            startSlideTimer();
-
-            // Handle scroll events to update current slide
-            bannerContainer.addEventListener('scroll', () => {
-                const slideWidth = slides[0].offsetWidth;
-                const scrollPosition = bannerContainer.scrollLeft;
-                const newSlide = Math.round(scrollPosition / slideWidth);
-                
-                if (newSlide !== currentSlide) {
-                    currentSlide = newSlide;
-                    updateDots();
-                }
-            });
-        });
-
-        // Banner slider functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            const bannerContainer = document.querySelector('.banner-container');
-            const slides = document.querySelectorAll('.banner-slide');
-            const totalSlides = slides.length;
-            let currentSlide = 0;
-            const slideInterval = 5000; // 5 seconds between slides
-            let slideTimer;
-
-            // Add slide indicators/dots
-            const dotsContainer = document.createElement('div');
-            dotsContainer.className = 'banner-dots';
-            dotsContainer.style.cssText = `
-                position: absolute;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                display: flex;
-                gap: 10px;
-                z-index: 10;
-            `;
-
-            for (let i = 0; i < totalSlides; i++) {
-                const dot = document.createElement('button');
-                dot.className = 'banner-dot' + (i === 0 ? ' active' : '');
-                dot.style.cssText = `
-                    width: 10px;
-                    height: 10px;
-                    border-radius: 50%;
-                    border: none;
-                    background: ${i === 0 ? '#9333ea' : 'rgba(255, 255, 255, 0.5)'};
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    padding: 0;
-                `;
-                dot.addEventListener('click', () => goToSlide(i));
-                dotsContainer.appendChild(dot);
-            }
-            bannerContainer.appendChild(dotsContainer);
-
-            // Add navigation arrows
-            const createNavButton = (direction) => {
-                const button = document.createElement('button');
-                button.className = `banner-nav banner-nav-${direction}`;
-                button.innerHTML = `<i class="fas fa-chevron-${direction === 'prev' ? 'left' : 'right'}"></i>`;
-                button.style.cssText = `
-                    position: absolute;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    ${direction === 'prev' ? 'left' : 'right'}: 20px;
-                    background: rgba(147, 51, 234, 0.8);
-                    border: none;
-                    border-radius: 50%;
-                    width: 40px;
-                    height: 40px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    cursor: pointer;
-                    color: white;
-                    z-index: 10;
-                    transition: all 0.3s ease;
-                `;
-                button.addEventListener('click', () => {
-                    if (direction === 'prev') {
-                        prevSlide();
-                    } else {
-                        nextSlide();
-                    }
-                });
-                return button;
-            };
-
-            bannerContainer.appendChild(createNavButton('prev'));
-            bannerContainer.appendChild(createNavButton('next'));
-
-            function updateSlides() {
-                slides.forEach((slide, index) => {
-                    slide.style.transform = `translateX(${(index - currentSlide) * 100}%)`;
-                    slide.style.transition = 'transform 0.5s ease';
-                });
-
-                // Update dots
-                document.querySelectorAll('.banner-dot').forEach((dot, index) => {
-                    dot.style.background = index === currentSlide ? '#9333ea' : 'rgba(255, 255, 255, 0.5)';
-                });
-            }
-
-            function nextSlide() {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                updateSlides();
-                resetTimer();
-            }
-
-            function prevSlide() {
-                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-                updateSlides();
-                resetTimer();
-            }
-
-            function goToSlide(index) {
-                currentSlide = index;
-                updateSlides();
-                resetTimer();
-            }
-
-            function startTimer() {
-                slideTimer = setInterval(nextSlide, slideInterval);
-            }
-
-            function resetTimer() {
-                clearInterval(slideTimer);
-                startTimer();
-            }
-
-            // Touch events for mobile swipe
-            let touchStartX = 0;
-            let touchEndX = 0;
-
-            bannerContainer.addEventListener('touchstart', (e) => {
-                touchStartX = e.touches[0].clientX;
-                clearInterval(slideTimer);
-            }, { passive: true });
-
-            bannerContainer.addEventListener('touchmove', (e) => {
-                touchEndX = e.touches[0].clientX;
-            }, { passive: true });
-
-            bannerContainer.addEventListener('touchend', () => {
-                const touchDiff = touchStartX - touchEndX;
-                if (Math.abs(touchDiff) > 50) { // Minimum swipe distance
-                    if (touchDiff > 0) {
-                        nextSlide();
-                    } else {
-                        prevSlide();
-                    }
-                }
-                startTimer();
-            });
-
-            // Mouse events for desktop
-            bannerContainer.addEventListener('mouseenter', () => {
-                clearInterval(slideTimer);
-            });
-
-            bannerContainer.addEventListener('mouseleave', () => {
-                startTimer();
-            });
-
-            // Initialize slider
-            updateSlides();
-            startTimer();
-
-            // Add CSS for slide transitions
-            const style = document.createElement('style');
-            style.textContent = `
-                .banner-container {
-                    position: relative;
-                    overflow: hidden;
-                }
-                .banner-slide {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    opacity: 1;
-                    transition: transform 0.5s ease;
-                }
-                .banner-nav:hover {
-                    background: rgba(147, 51, 234, 1);
-                    transform: translateY(-50%) scale(1.1);
-                }
-                .banner-dot:hover {
-                    background: #9333ea !important;
-                    transform: scale(1.2);
-                }
-                @media (max-width: 768px) {
-                    .banner-nav {
-                        width: 30px !important;
-                        height: 30px !important;
-                    }
-                    .banner-dots {
-                        bottom: 10px !important;
-                    }
-                    .banner-dot {
-                        width: 8px !important;
-                        height: 8px !important;
-                    }
-                }
-            `;
-            document.head.appendChild(style);
-        });
-
-        // Replace the existing banner slider code with this:
-        document.addEventListener('DOMContentLoaded', () => {
-            const slidesWrapper = document.querySelector('.banner-slides-wrapper');
-            const slides = document.querySelectorAll('.banner-slide');
-            let currentSlide = 0;
-            const totalSlides = slides.length;
-
-            // Add smooth transition
-            slidesWrapper.style.transition = 'transform 0.5s ease';
-
-            // Function to update slider position
-            function updateSlider() {
-                slidesWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
-            }
-
-            // Function to move to next slide
-            function nextSlide() {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                updateSlider();
-            }
-
-            // Start automatic sliding - store interval ID to clear it if needed
-            const slideInterval = setInterval(nextSlide, 1000);
-
-            // Initial position
-            updateSlider();
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const slidesWrapper = document.querySelector('.banner-slides-wrapper');
-            const slides = document.querySelectorAll('.banner-slide');
-            let currentSlide = 0;
-            const totalSlides = slides.length;
-
-            function updateSlider() {
-                slidesWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
-            }
-
-            setInterval(() => {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                updateSlider();
-            }, 1000);
-
-            slidesWrapper.style.transition = 'transform 0.5s ease';
-        });
-    </script>
-        <script>
-        const initBannerSlider = () => {
-            const slidesWrapper = document.querySelector('.banner-slides-wrapper');
-            const slides = document.querySelectorAll('.banner-slide');
-            let currentSlide = 0;
-            const totalSlides = slides.length;
-
-            // Add smooth transition
-            slidesWrapper.style.transition = 'transform 0.5s ease';
-
-            // Function to move to next slide
-            function moveToNextSlide() {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                slidesWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
-            }
-
-            // Start automatic sliding
-            setInterval(moveToNextSlide, 1000);
-        };
-
-        // Initialize the banner slider when the page loads
-        document.addEventListener('DOMContentLoaded', initBannerSlider);
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const bannerWrapper = document.querySelector('.banner-slides-wrapper');
-            const slides = document.querySelectorAll('.banner-slide');
-            let currentIndex = 0;
-
-            function showSlide(index) {
-                bannerWrapper.style.transform = `translateX(-${index * 100}%)`;
-            }
-
-            function nextSlide() {
-                currentIndex = (currentIndex + 1) % slides.length;
-                showSlide(currentIndex);
-            }
-
-            // Set initial styles
-            bannerWrapper.style.display = 'flex';
-            bannerWrapper.style.transition = 'transform 0.5s ease';
-            slides.forEach(slide => {
-                slide.style.flex = '0 0 100%';
-            });
-
-            // Start automatic sliding
-            window.bannerInterval = setInterval(nextSlide, 3000);
-
-            // Show first slide
-            showSlide(0);
-        });
     </script>
 </body>
 </html>

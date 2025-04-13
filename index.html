@@ -3371,6 +3371,63 @@
             background: #9333ea;
             transform: scale(1.2);
         }
+
+        .banner-dots {
+            display: none !important;
+        }
+
+        .banner-wrapper {
+            width: 100%;
+            max-width: 1400px;
+            margin: 70px auto 30px auto;
+            position: relative;
+            overflow: hidden;
+            padding: 0 15px;
+        }
+
+        .banner-container {
+            width: 100%;
+            height: 50vh;
+            max-height: 600px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(147, 51, 234, 0.2);
+            border: 2px solid rgba(147, 51, 234, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 768px) {
+            .banner-wrapper {
+                margin: 50px auto 20px auto;
+            }
+            
+            .banner-container {
+                height: 35vh;
+                max-height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .banner-wrapper {
+                margin: 40px auto 15px auto;
+            }
+            
+            .banner-container {
+                height: 30vh;
+                max-height: 250px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .banner-container {
+                height: 25vh;
+                max-height: 200px;
+                min-height: 150px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -5490,95 +5547,42 @@
             document.head.appendChild(style);
         });
 
-        // Add this JavaScript code right before the closing </script> tag
-       <script>
-       document.addEventListener('DOMContentLoaded', () => {
+        // Replace the existing banner JavaScript code with this version
+        document.addEventListener('DOMContentLoaded', () => {
             const container = document.querySelector('.banner-container');
             const slidesWrapper = document.querySelector('.banner-slides-wrapper');
             const slides = document.querySelectorAll('.banner-slide');
             let currentSlide = 0;
             const totalSlides = slides.length;
-            
-            // Create navigation buttons
-            const createNav = (direction) => {
-                const button = document.createElement('button');
-                button.className = `banner-nav banner-nav-${direction}`;
-                button.innerHTML = `<i class="fas fa-chevron-${direction}"></i>`;
-                button.setAttribute('aria-label', `${direction === 'prev' ? 'Previous' : 'Next'} slide`);
-                button.onclick = () => {
-                    if (direction === 'prev') {
-                        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-                    } else {
-                        currentSlide = (currentSlide + 1) % totalSlides;
-                    }
-                    updateSlider();
-                };
-                return button;
-            };
-            
-            // Add navigation buttons
-            const prevBtn = createNav('prev');
-            const nextBtn = createNav('next');
-            container.appendChild(prevBtn);
-            container.appendChild(nextBtn);
-            
-            // Create dots navigation
-            const dotsContainer = document.createElement('div');
-            dotsContainer.className = 'banner-dots';
-            
-            for (let i = 0; i < totalSlides; i++) {
-                const dot = document.createElement('button');
-                dot.className = `banner-dot ${i === 0 ? 'active' : ''}`;
-                dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
-                dot.onclick = () => {
-                    currentSlide = i;
-                    updateSlider();
-                };
-                dotsContainer.appendChild(dot);
-            }
-            container.appendChild(dotsContainer);
-            
-            // Update slider position and dots
+
+            // Update slider position
             function updateSlider() {
                 slidesWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
-                
-                // Update dots
-                document.querySelectorAll('.banner-dot').forEach((dot, index) => {
-                    dot.classList.toggle('active', index === currentSlide);
-                });
             }
-            
+
             // Auto-slide functionality
-            let autoSlideInterval;
-            
             function startAutoSlide() {
-                autoSlideInterval = setInterval(() => {
+                setInterval(() => {
                     currentSlide = (currentSlide + 1) % totalSlides;
                     updateSlider();
-                }, 5000); // Change slide every 5 seconds
+                }, 1000); // Slide every 1 second
             }
-            
-            function stopAutoSlide() {
-                clearInterval(autoSlideInterval);
-            }
-            
+
             // Touch/Swipe functionality
             let touchStartX = 0;
             let touchEndX = 0;
-            
+
             container.addEventListener('touchstart', (e) => {
                 touchStartX = e.touches[0].clientX;
-                stopAutoSlide();
             }, { passive: true });
-            
+
             container.addEventListener('touchmove', (e) => {
                 touchEndX = e.touches[0].clientX;
             }, { passive: true });
-            
+
             container.addEventListener('touchend', () => {
                 const touchDiff = touchStartX - touchEndX;
-                
-                if (Math.abs(touchDiff) > 50) { // Minimum swipe distance
+                if (Math.abs(touchDiff) > 50) {
                     if (touchDiff > 0) {
                         currentSlide = (currentSlide + 1) % totalSlides;
                     } else {
@@ -5586,78 +5590,13 @@
                     }
                     updateSlider();
                 }
-                
-                startAutoSlide();
             });
-            
-            // Start auto-sliding
+
+            // Add smooth transition to slides
+            slidesWrapper.style.transition = 'transform 0.5s ease';
+
+            // Start auto-sliding immediately
             startAutoSlide();
-            
-            // Pause auto-slide on hover
-            container.addEventListener('mouseenter', stopAutoSlide);
-            container.addEventListener('mouseleave', startAutoSlide);
-        });
-
-        // Add this JavaScript code right before the closing </script> tag
-        <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const slidesWrapper = document.querySelector('.banner-slides-wrapper');
-            const slides = document.querySelectorAll('.banner-slide');
-            let currentSlide = 0;
-            const totalSlides = slides.length;
-
-            function updateSlidePosition() {
-                slidesWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
-            }
-
-            function nextSlide() {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                updateSlidePosition();
-            }
-
-            function prevSlide() {
-                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-                updateSlidePosition();
-            }
-
-            // Add navigation buttons
-            const container = document.querySelector('.banner-container');
-            
-            const prevBtn = document.createElement('button');
-            prevBtn.className = 'banner-nav banner-nav-prev';
-            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-            prevBtn.onclick = prevSlide;
-            
-            const nextBtn = document.createElement('button');
-            nextBtn.className = 'banner-nav banner-nav-next';
-            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-            nextBtn.onclick = nextSlide;
-            
-            container.appendChild(prevBtn);
-            container.appendChild(nextBtn);
-
-            // Auto-slide
-            setInterval(nextSlide, 5000);
-
-            // Touch events
-            let touchStartX = 0;
-            let touchEndX = 0;
-
-            slidesWrapper.addEventListener('touchstart', (e) => {
-                touchStartX = e.touches[0].clientX;
-            });
-
-            slidesWrapper.addEventListener('touchmove', (e) => {
-                touchEndX = e.touches[0].clientX;
-            });
-
-            slidesWrapper.addEventListener('touchend', () => {
-                if (touchStartX - touchEndX > 50) {
-                    nextSlide();
-                } else if (touchEndX - touchStartX > 50) {
-                    prevSlide();
-                }
-            });
         });
     </script>
 </body>

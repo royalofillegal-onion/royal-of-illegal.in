@@ -92,6 +92,7 @@
             border: none;
             width: 100%;
             background: rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(5px);
             backdrop-filter: blur(5px);
             font-size: 1rem;
             transition: all 0.3s ease;
@@ -122,6 +123,7 @@
             background: rgba(40, 40, 40, 0.98);
             z-index: 1000;
             overflow-y: auto;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             display: none;
             max-height: calc(100vh - 70px);
@@ -287,11 +289,11 @@
         }
 
         main {
-            margin-top: 70px;
+            margin-top: 20px;
             padding: 1rem;
             margin-bottom: 80px;
-            height: calc(100vh - 150px);
-            overflow-y: auto;
+            position: relative;
+            z-index: 0;
         }
 
         .playlist-section {
@@ -528,6 +530,7 @@
             bottom: 0;
             width: 100%;
             background: rgba(40, 40, 40, 0.9);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             height: 70px;
             display: grid;
@@ -903,6 +906,7 @@
             z-index: 1001;
             width: 90%;
             max-width: 500px;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(147, 51, 234, 0.3);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -1261,6 +1265,7 @@
             background: rgba(18, 18, 18, 0.95);
             z-index: 1000;
             overflow-y: auto;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             transform: translateY(-20px);
             opacity: 0;
@@ -1290,6 +1295,7 @@
             left: 0;
             width: 100%;
             background: rgba(40, 40, 40, 0.95);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             z-index: 1001;
             transform: translateY(0);
@@ -1339,6 +1345,7 @@
             justify-content: space-between;
             align-items: center;
             z-index: 1001;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(147, 51, 234, 0.3);
         }
@@ -1621,6 +1628,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
 
@@ -1716,6 +1724,7 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             z-index: 2001;
         }
@@ -2322,8 +2331,8 @@
             position: relative;
             display: flex;
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
         }
 
         .banner-image {
@@ -2528,8 +2537,8 @@
             position: relative;
             display: flex;
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
         }
 
         .banner-image {
@@ -2753,8 +2762,8 @@
             position: relative;
             display: flex;
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
         }
 
         .banner-image {
@@ -2899,408 +2908,24 @@
         .banner-wrapper {
             width: 100%;
             max-width: 1400px;
-            margin: 70px auto 30px auto;
-            position: relative;
-            overflow: hidden;
+            margin: 0 auto;
             padding: 0 15px;
+            position: relative;
+            z-index: 1;
         }
 
         .banner-container {
             width: 100%;
-            height: 50vh; /* Default height is 50% of viewport height */
-            max-height: min(600px, 70vh); /* Maximum height is either 600px or 70% of viewport height */
+            height: 400px; /* Default height for desktop */
             position: relative;
             overflow: hidden;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(147, 51, 234, 0.2);
             border: 2px solid rgba(147, 51, 234, 0.5);
             background: rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .banner-slide {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .banner-image {
-            width: 55%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .banner-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .banner-content {
-            width: 45%;
-            height: 100%;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(34, 197, 94, 0.1));
-        }
-
-        /* Tablet Styles */
-        @media (max-width: 1024px) {
-            .banner-wrapper {
-                margin: 60px auto 25px auto;
-            }
-            
-            .banner-container {
-                height: 45vh;
-                max-height: min(500px, 60vh);
-            }
-        }
-
-        /* Mobile Styles */
-        @media (max-width: 768px) {
-            .banner-wrapper {
-                margin: 50px auto 20px auto;
-                padding: 0 10px;
-            }
-
-            .banner-container {
-                height: 50vh; /* Takes exactly half of viewport height on mobile */
-                max-height: none; /* Remove max-height constraint for mobile */
-            }
-
-            .banner-slide {
-                flex-direction: column;
-            }
-
-            .banner-image {
-                width: 100%;
-                height: 60%;
-            }
-
-            .banner-content {
-                width: 100%;
-                height: 40%;
-                padding: 15px;
-                text-align: center;
-            }
-
-            .banner-content h2 {
-                font-size: clamp(1.2rem, 4vw, 1.5rem);
-                margin-bottom: 10px;
-            }
-
-            .banner-content span {
-                font-size: clamp(1.5rem, 5vw, 1.8rem);
-            }
-
-            .banner-content p {
-                font-size: clamp(0.8rem, 3vw, 0.9rem);
-                margin-bottom: 15px;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-        }
-
-        /* Small Mobile Styles */
-        @media (max-width: 480px) {
-            .banner-wrapper {
-                margin: 40px auto 15px auto;
-                padding: 0 8px;
-            }
-
-            .banner-container {
-                height: 50vh;
-            }
-
-            .banner-image {
-                height: 55%;
-            }
-
-            .banner-content {
-                height: 45%;
-                padding: 12px;
-            }
-
-            .banner-content h2 {
-                font-size: 1.2rem;
-            }
-
-            .banner-content span {
-                font-size: 1.5rem;
-            }
-
-            .banner-content p {
-                font-size: 0.8rem;
-                margin-bottom: 10px;
-                -webkit-line-clamp: 2;
-            }
-
-            .banner-icons a {
-                width: 30px;
-                height: 30px;
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Extra Small Mobile Styles */
-        @media (max-width: 360px) {
-            .banner-container {
-                max-height: 250px;
-                min-height: 180px;
-            }
-
-            .banner-content h2 {
-                font-size: 1.1rem;
-            }
-
-            .banner-content span {
-                font-size: 1.3rem;
-            }
-
-            .banner-content p {
-                -webkit-line-clamp: 1;
-            }
-        }
-
-        /* Landscape Mode Optimization */
-        @media (max-width: 768px) and (orientation: landscape) {
-            .banner-container {
-                aspect-ratio: 16/9;
-                max-height: 300px;
-            }
-
-            .banner-slide {
-                flex-direction: row;
-            }
-
-            .banner-image {
-                width: 60%;
-                height: 100%;
-            }
-
-            .banner-content {
-                width: 40%;
-                height: 100%;
-                padding: 10px;
-            }
-        }
-
-        .banner-wrapper {
-            width: 100%;
-            max-width: 1400px;
-            margin: 70px auto 30px auto;
-            position: relative;
-            overflow: hidden;
-            padding: 0 15px;
-        }
-
-        .banner-container {
-            width: 100%;
-            height: 50vh; /* Default height is 50% of viewport height */
-            max-height: min(600px, 70vh); /* Maximum height is either 600px or 70% of viewport height */
-            position: relative;
-            overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(147, 51, 234, 0.2);
-            border: 2px solid rgba(147, 51, 234, 0.5);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .banner-slide {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .banner-image {
-            width: 55%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .banner-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .banner-content {
-            width: 45%;
-            height: 100%;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(34, 197, 94, 0.1));
-        }
-
-        /* Tablet Styles */
-        @media (max-width: 1024px) {
-            .banner-wrapper {
-                margin: 60px auto 25px auto;
-            }
-            
-            .banner-container {
-                height: 45vh;
-                max-height: min(500px, 60vh);
-            }
-        }
-
-        /* Mobile Styles */
-        @media (max-width: 768px) {
-            .banner-wrapper {
-                margin: 50px auto 20px auto;
-                padding: 0 10px;
-            }
-
-            .banner-container {
-                height: 50vh; /* Takes exactly half of viewport height on mobile */
-                max-height: none; /* Remove max-height constraint for mobile */
-            }
-
-            .banner-slide {
-                flex-direction: column;
-            }
-
-            .banner-image {
-                width: 100%;
-                height: 60%;
-            }
-
-            .banner-content {
-                width: 100%;
-                height: 40%;
-                padding: 15px;
-                text-align: center;
-            }
-
-            .banner-content h2 {
-                font-size: clamp(1.2rem, 4vw, 1.5rem);
-                margin-bottom: 10px;
-            }
-
-            .banner-content span {
-                font-size: clamp(1.5rem, 5vw, 1.8rem);
-            }
-
-            .banner-content p {
-                font-size: clamp(0.8rem, 3vw, 0.9rem);
-                margin-bottom: 15px;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-        }
-
-        /* Small Mobile Styles */
-        @media (max-width: 480px) {
-            .banner-wrapper {
-                margin: 40px auto 15px auto;
-                padding: 0 8px;
-            }
-
-            .banner-container {
-                height: 50vh;
-            }
-
-            .banner-image {
-                height: 55%;
-            }
-
-            .banner-content {
-                height: 45%;
-                padding: 12px;
-            }
-
-            .banner-content h2 {
-                font-size: 1.2rem;
-            }
-
-            .banner-content span {
-                font-size: 1.5rem;
-            }
-
-            .banner-content p {
-                font-size: 0.8rem;
-                margin-bottom: 10px;
-                -webkit-line-clamp: 2;
-            }
-
-            .banner-icons a {
-                width: 30px;
-                height: 30px;
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Extra Small Mobile Styles */
-        @media (max-width: 360px) {
-            .banner-container {
-                max-height: 250px;
-                min-height: 180px;
-            }
-
-            .banner-content h2 {
-                font-size: 1.1rem;
-            }
-
-            .banner-content span {
-                font-size: 1.3rem;
-            }
-
-            .banner-content p {
-                -webkit-line-clamp: 1;
-            }
-        }
-
-        /* Landscape Mode Optimization */
-        @media (max-width: 768px) and (orientation: landscape) {
-            .banner-container {
-                aspect-ratio: 16/9;
-                max-height: 300px;
-            }
-
-            .banner-slide {
-                flex-direction: row;
-            }
-
-            .banner-image {
-                width: 60%;
-                height: 100%;
-            }
-
-            .banner-content {
-                width: 40%;
-                height: 100%;
-                padding: 10px;
-            }
-        }
-
-        // Add this CSS in the existing <style> tag
-        .banner-container {
-            width: 100%;
-            height: 50vh;
-            position: relative;
-            overflow: hidden;
-            border-radius: 12px;
+            margin-top: 90px;
         }
 
         .banner-slides-wrapper {
@@ -3317,149 +2942,94 @@
             display: flex;
         }
 
-        .banner-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            background: rgba(147, 51, 234, 0.8);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .banner-nav-prev {
-            left: 20px;
-        }
-
-        .banner-nav-next {
-            right: 20px;
-        }
-
-        .banner-dots {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px 15px;
-            border-radius: 20px;
-        }
-
-        .banner-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 0;
-        }
-
-        .banner-dot.active {
-            background: #9333ea;
-            transform: scale(1.2);
-        }
-
-        .banner-dots {
-            display: none !important;
-        }
-
-        .banner-wrapper {
-            width: 100%;
-            max-width: 1400px;
-            margin: 70px auto 30px auto;
-            position: relative;
-            overflow: hidden;
-            padding: 0 15px;
-        }
-
-        .banner-container {
-            width: 100%;
-            height: 50vh;
-            max-height: 600px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(147, 51, 234, 0.2);
-            border: 2px solid rgba(147, 51, 234, 0.5);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        @media (max-width: 768px) {
-            .banner-wrapper {
-                margin: 50px auto 20px auto;
-            }
-            
+        /* Large screens (1200px and up) */
+        @media (min-width: 1200px) {
             .banner-container {
-                height: 35vh;
+                height: 450px;
+            }
+        }
+
+        /* Medium screens (992px to 1199px) */
+        @media (max-width: 1199px) {
+            .banner-container {
+                height: 350px;
+                margin-top: 85px;
+            }
+        }
+
+        /* Tablets (768px to 991px) */
+        @media (max-width: 991px) {
+            .banner-container {
+                height: 300px;
+                margin-top: 80px;
+            }
+            .banner-wrapper {
+                padding: 0 10px;
+            }
+        }
+
+        /* Large phones (576px to 767px) */
+        @media (max-width: 767px) {
+            .banner-container {
+                height: 250px;
+                margin-top: 75px;
+            }
+            .banner-slide {
+                flex-direction: column;
+            }
+        }
+
+        /* Small phones (575px and below) */
+        @media (max-width: 575px) {
+            .banner-container {
+                height: 200px;
+                margin-top: 70px;
+                border-width: 1px;
+            }
+            .banner-wrapper {
+                padding: 0 8px;
+            }
+        }
+
+        /* Extra small phones (360px and below) */
+        @media (max-width: 360px) {
+            .banner-container {
+                height: 180px;
+                margin-top: 65px;
+            }
+        }
+
+        /* Landscape mode optimization */
+        @media (max-width: 991px) and (orientation: landscape) {
+            .banner-container {
+                height: 70vh;
                 max-height: 300px;
             }
         }
 
-        @media (max-width: 480px) {
-            .banner-wrapper {
-                margin: 40px auto 15px auto;
-            }
-            
-            .banner-container {
-                height: 30vh;
-                max-height: 250px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .banner-container {
-                height: 25vh;
-                max-height: 200px;
-                min-height: 150px;
-            }
-        }
-
-        /* Add inside the <style> tag */
-
-        .banner-container {
-            width: 100%;
-            height: 50vh;
-            max-height: 500px;
+        main {
+            margin-top: 20px;
+            padding: 1rem;
+            margin-bottom: 80px;
             position: relative;
-            overflow: hidden;
-            border-radius: 12px;
+            z-index: 0;
         }
 
         @media (max-width: 768px) {
             .banner-container {
-                height: 300px;
-                max-height: 40vh;
+                height: 250px;
+                margin-top: 80px;
             }
         }
 
         @media (max-width: 480px) {
             .banner-container {
-                height: 250px;
-                max-height: 35vh;
+                height: 200px;
+                margin-top: 70px;
             }
         }
 
-        @media (max-width: 360px) {
-            .banner-container {
-                height: 200px;
-                max-height: 30vh;
-            }
-        }
+        // ... existing code ...
     </style>
 </head>
 <body>
@@ -5579,56 +5149,32 @@
             document.head.appendChild(style);
         });
 
-        // Replace the existing banner JavaScript code with this version
+        // Replace the existing banner slider code with this:
         document.addEventListener('DOMContentLoaded', () => {
-            const container = document.querySelector('.banner-container');
             const slidesWrapper = document.querySelector('.banner-slides-wrapper');
             const slides = document.querySelectorAll('.banner-slide');
             let currentSlide = 0;
             const totalSlides = slides.length;
 
-            // Update slider position
+            // Add smooth transition
+            slidesWrapper.style.transition = 'transform 0.5s ease';
+
+            // Function to update slider position
             function updateSlider() {
                 slidesWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
             }
 
-            // Auto-slide functionality
-            function startAutoSlide() {
-                setInterval(() => {
-                    currentSlide = (currentSlide + 1) % totalSlides;
-                    updateSlider();
-                }, 1000); // Slide every 1 second
+            // Function to move to next slide
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                updateSlider();
             }
 
-            // Touch/Swipe functionality
-            let touchStartX = 0;
-            let touchEndX = 0;
+            // Start automatic sliding - store interval ID to clear it if needed
+            const slideInterval = setInterval(nextSlide, 1000);
 
-            container.addEventListener('touchstart', (e) => {
-                touchStartX = e.touches[0].clientX;
-            }, { passive: true });
-
-            container.addEventListener('touchmove', (e) => {
-                touchEndX = e.touches[0].clientX;
-            }, { passive: true });
-
-            container.addEventListener('touchend', () => {
-                const touchDiff = touchStartX - touchEndX;
-                if (Math.abs(touchDiff) > 50) {
-                    if (touchDiff > 0) {
-                        currentSlide = (currentSlide + 1) % totalSlides;
-                    } else {
-                        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-                    }
-                    updateSlider();
-                }
-            });
-
-            // Add smooth transition to slides
-            slidesWrapper.style.transition = 'transform 0.5s ease';
-
-            // Start auto-sliding immediately
-            startAutoSlide();
+            // Initial position
+            updateSlider();
         });
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -5647,6 +5193,57 @@
             }, 1000);
 
             slidesWrapper.style.transition = 'transform 0.5s ease';
+        });
+
+        // Add this inside your existing <script> tag
+        const initBannerSlider = () => {
+            const slidesWrapper = document.querySelector('.banner-slides-wrapper');
+            const slides = document.querySelectorAll('.banner-slide');
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+
+            // Add smooth transition
+            slidesWrapper.style.transition = 'transform 0.5s ease';
+
+            // Function to move to next slide
+            function moveToNextSlide() {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                slidesWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+            }
+
+            // Start automatic sliding
+            setInterval(moveToNextSlide, 1000);
+        };
+
+        // Initialize the banner slider when the page loads
+        document.addEventListener('DOMContentLoaded', initBannerSlider);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const bannerWrapper = document.querySelector('.banner-slides-wrapper');
+            const slides = document.querySelectorAll('.banner-slide');
+            let currentIndex = 0;
+
+            function showSlide(index) {
+                bannerWrapper.style.transform = `translateX(-${index * 100}%)`;
+            }
+
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % slides.length;
+                showSlide(currentIndex);
+            }
+
+            // Set initial styles
+            bannerWrapper.style.display = 'flex';
+            bannerWrapper.style.transition = 'transform 0.5s ease';
+            slides.forEach(slide => {
+                slide.style.flex = '0 0 100%';
+            });
+
+            // Start automatic sliding
+            window.bannerInterval = setInterval(nextSlide, 1000);
+
+            // Show first slide
+            showSlide(0);
         });
     </script>
 </body>

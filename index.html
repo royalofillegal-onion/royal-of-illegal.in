@@ -287,7 +287,7 @@
         }
 
         main {
-            margin-top: 70px;
+            margin-top: 20px;
             padding: 1rem;
             margin-bottom: 80px;
             height: calc(100vh - 150px);
@@ -300,11 +300,6 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.5s ease forwards;
-            border: 1px solid rgba(147, 51, 234, 0.15);
-            border-radius: 20px;
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.02);
-            box-shadow: inset 0 0 30px rgba(147, 51, 234, 0.05);
         }
 
         .playlist-section h2 {
@@ -336,7 +331,7 @@
         }
 
         .slider-container {
-            height: 280px;
+            height: 280px; /* Increased height to accommodate text */
             display: flex;
             gap: 1.5rem;
             padding: 1rem;
@@ -351,10 +346,14 @@
             margin: 0.5rem 0;
             position: relative;
             cursor: grab;
-            border: 2px solid rgba(147, 51, 234, 0.3);
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.03);
-            box-shadow: inset 0 0 20px rgba(147, 51, 234, 0.1);
+        }
+
+        .slider-container:active {
+            cursor: grabbing;
+        }
+
+        .slider-container::-webkit-scrollbar {
+            display: none;
         }
 
         .song-slide {
@@ -378,15 +377,11 @@
             transform-style: preserve-3d;
             perspective: 1000px;
             margin: 0.5rem;
-            border: 2px solid rgba(147, 51, 234, 0.2);
-            background: linear-gradient(to bottom, rgba(40, 40, 40, 0.95), rgba(30, 30, 30, 0.95));
         }
 
-        .song-slide:hover {
-            border-color: rgba(147, 51, 234, 0.6);
-            transform: translateY(-5px);
+        .song-slide:active {
+            transform: translateY(-5px) scale(1.02) rotateX(10deg) rotateY(10deg);
             box-shadow: 0 8px 25px rgba(147, 51, 234, 0.3);
-            background: linear-gradient(to bottom, rgba(45, 45, 45, 0.95), rgba(35, 35, 35, 0.95));
         }
 
         .song-slide img {
@@ -395,46 +390,9 @@
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
-            border: 1px solid rgba(147, 51, 234, 0.15);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .song-slide:hover img {
-            transform: scale(1.02);
-            border-color: rgba(147, 51, 234, 0.4);
-            box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4);
-        }
-
-        .slider-nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 44px;
-            height: 44px;
-            border: 2px solid rgba(147, 51, 234, 0.3);
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(34, 197, 94, 0.2));
-            -webkit-backdrop-filter: blur(5px);
-            backdrop-filter: blur(5px);
-            box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            opacity: 0;
-            z-index: 10;
-            font-size: 20px;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .slider-nav-btn:hover {
-            border-color: rgba(147, 51, 234, 0.6);
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.3), rgba(34, 197, 94, 0.3));
-            box-shadow: 0 6px 20px rgba(147, 51, 234, 0.3);
-            transform: translateY(-50%) scale(1.1);
         }
 
         .song-slide:active img {
@@ -813,56 +771,47 @@
         }
 
         .volume-controls input[type="range"] {
+            width: 50px;
+            height: 4px;
             -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            outline: none;
-            padding: 0;
-            margin: 0;
+            background: #4f4f4f;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
 
-        /* Make the slider thumb bigger and more touch-friendly */
+        .volume-controls input[type="range"]:hover {
+            height: 6px;
+            background: linear-gradient(90deg, #9333ea, #22c55e);
+        }
+
+        .volume-controls input[type="range"]:active {
+            transform: rotateX(5deg);
+            height: 6px;
+            background: linear-gradient(90deg, #9333ea, #22c55e);
+        }
+
         .volume-controls input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
-            width: 24px;
-            height: 24px;
-            background: #9333ea;
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(45deg, #9333ea, #22c55e);
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border: 2px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(147, 51, 234, 0.4);
         }
 
-        /* Add styles for Firefox */
-        .volume-controls input[type="range"]::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            background: #9333ea;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 2px solid rgba(255, 255, 255, 0.5);
+        .volume-controls input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.5);
+            box-shadow: 0 0 15px rgba(147, 51, 234, 0.6);
         }
 
-        /* Add touch-friendly padding around the slider */
-        @media (max-width: 768px) {
-            .volume-controls input[type="range"] {
-                height: 10px;
-                margin: 10px 0;
-            }
-
-            .volume-controls input[type="range"]::-webkit-slider-thumb {
-                width: 28px;
-                height: 28px;
-            }
-
-            .volume-controls input[type="range"]::-moz-range-thumb {
-                width: 28px;
-                height: 28px;
-            }
+        .volume-controls input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.5) rotateX(5deg);
+            box-shadow: 0 0 15px rgba(147, 51, 234, 0.6);
         }
 
         .volume-controls i {
@@ -2194,6 +2143,224 @@
                 gap: 10px;
             }
         }
+
+        .banner-slider {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin-top: 70px;
+            overflow: hidden;
+            border-radius: 15px;
+            margin: 70px 15px 0;
+            width: calc(100% - 30px);
+        }
+
+        .banner-container {
+            position: relative;
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+
+        .banner-slide {
+            position: relative;
+            width: 33.333%;
+            height: 100%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .banner-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(255, 0, 0, 0.2),
+                rgba(255, 166, 0, 0.2),
+                rgba(255, 255, 0, 0.2),
+                rgba(0, 255, 0, 0.2),
+                rgba(0, 0, 255, 0.2),
+                rgba(238, 130, 238, 0.2)
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .banner-slide:hover::before {
+            opacity: 1;
+            animation: rainbowShift 3s linear infinite;
+        }
+
+        @keyframes rainbowShift {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .banner-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .banner-slide:hover img {
+            transform: scale(1.05);
+        }
+
+        .banner-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            z-index: 2;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .banner-slide:hover .banner-content {
+            transform: translateY(-10px);
+        }
+
+        .banner-content h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, 
+                #ff0000,
+                #ff8000,
+                #ffff00,
+                #00ff00,
+                #00ffff,
+                #0000ff,
+                #8000ff,
+                #ff00ff
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbowText 8s linear infinite;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        @keyframes rainbowText {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .banner-content p {
+            font-size: 18px;
+            margin: 0;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            opacity: 0.9;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .banner-slide:hover .banner-content p {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .banner-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 3;
+            font-size: 1.2rem;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .banner-nav:hover {
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+        }
+
+        .banner-nav.prev {
+            left: 20px;
+            title: "Previous slide";
+        }
+
+        .banner-nav.next {
+            right: 20px;
+            title: "Next slide";
+        }
+
+        .banner-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 3;
+        }
+
+        .banner-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .banner-dot:hover {
+            background: linear-gradient(45deg, #9333ea, #22c55e);
+            transform: scale(1.2);
+        }
+
+        .banner-dot.active {
+            background: #9333ea;
+            border-color: white;
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .banner-slider {
+                height: 200px;
+                margin: 70px 10px 0;
+                width: calc(100% - 20px);
+            }
+
+            .banner-content h2 {
+                font-size: 22px;
+            }
+
+            .banner-content p {
+                font-size: 14px;
+            }
+
+            .banner-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2271,6 +2438,86 @@
             </button>
         </div>
     </header>
+
+    <!-- Add Banner Slider -->
+    <div class="banner-slider">
+        <div class="banner-container">
+            <div class="banner-slide">
+                <img src="https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872399/download_6_jpspgu.jpg" alt="Banner 1">
+                <div class="banner-content">
+                    <h2>New Release</h2>
+                    <p>Check out our latest songs</p>
+                </div>
+            </div>
+            <div class="banner-slide">
+                <img src="https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872530/download_7_fuc547.jpg" alt="Banner 2">
+                <div class="banner-content">
+                    <h2>Featured Artists</h2>
+                    <p>Listen to top artists</p>
+                </div>
+            </div>
+            <div class="banner-slide">
+                <img src="https://res.cloudinary.com/dl8dmkhmv/image/upload/v1743872765/download_8_vsrdmb.jpg" alt="Banner 3">
+                <div class="banner-content">
+                    <h2>Trending Now</h2>
+                    <p>Most popular tracks</p>
+                </div>
+            </div>
+        </div>
+        <button class="banner-nav prev"><i class="fas fa-chevron-left"></i></button>
+        <button class="banner-nav next"><i class="fas fa-chevron-right"></i></button>
+        <div class="banner-dots"></div>
+    </div>
+
+    <script>
+        // Banner Slider functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const bannerContainer = document.querySelector('.banner-container');
+            const slides = document.querySelectorAll('.banner-slide');
+            const prevBtn = document.querySelector('.banner-nav.prev');
+            const nextBtn = document.querySelector('.banner-nav.next');
+            const dotsContainer = document.querySelector('.banner-dots');
+            
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+
+            // Create dots
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = `banner-dot ${i === 0 ? 'active' : ''}`;
+                dot.addEventListener('click', () => goToSlide(i));
+                dotsContainer.appendChild(dot);
+            }
+
+            function updateDots() {
+                document.querySelectorAll('.banner-dot').forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentSlide);
+                });
+            }
+
+            function goToSlide(index) {
+                currentSlide = index;
+                bannerContainer.style.transform = `translateX(-${currentSlide * 33.333}%)`;
+                updateDots();
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                goToSlide(currentSlide);
+            }
+
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                goToSlide(currentSlide);
+            }
+
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+
+            // Auto slide every 5 seconds
+            setInterval(nextSlide, 5000);
+        });
+    </script>
 
     <main>
         <div class="playlist-section">
@@ -2719,6 +2966,10 @@
                     songs.forEach((song, index) => {
                         const slide = document.createElement('div');
                         slide.className = 'full-screen-slide';
+                        if (index === startIndex) {
+                            slide.classList.add('active');
+                        }
+                        slide.dataset.songIndex = index;
                         slide.innerHTML = `
                             <img src="${song.cover}" alt="${song.title}">
                             <div class="song-info">
@@ -2733,14 +2984,8 @@
                     fullScreenSlider.classList.add('active');
                     document.body.style.overflow = 'hidden';
 
-                    // Scroll to starting song
-                    fullScreenContent.scrollTo({
-                        left: startIndex * window.innerWidth,
-                        behavior: 'smooth'
-                    });
-
                     // Update current song and start playing
-                    currentSongIndex = allSongs.findIndex(s => s.title === songs[startIndex].title);
+                    currentSongIndex = startIndex;
                     loadSong(songs[startIndex]);
                     audio.play();
                     isPlaying = true;
@@ -2748,6 +2993,31 @@
 
                     // Setup full screen controls
                     setupFullScreenControls(songs);
+
+                    // Add ended event listener for auto-next
+                    audio.addEventListener('ended', () => {
+                        if (fullScreenSlider.classList.contains('active')) {
+                            const nextIndex = (currentSongIndex + 1) % songs.length;
+                            updateFullScreenSlide(nextIndex);
+                            loadSong(songs[nextIndex]);
+                            audio.play();
+                        }
+                    });
+                }
+
+                function updateFullScreenSlide(newIndex) {
+                    const slides = document.querySelectorAll('.full-screen-slide');
+                    slides.forEach(slide => slide.classList.remove('active'));
+                    
+                    const newSlide = slides[newIndex];
+                    if (newSlide) {
+                        newSlide.classList.add('active');
+                        fullScreenContent.scrollTo({
+                            left: newIndex * window.innerWidth,
+                            behavior: 'smooth'
+                        });
+                    }
+                    currentSongIndex = newIndex;
                 }
 
                 function setupFullScreenControls(songs) {
@@ -2769,10 +3039,7 @@
 
                     nextButton.onclick = () => {
                         const nextIndex = (currentSongIndex + 1) % songs.length;
-                        fullScreenContent.scrollTo({
-                            left: nextIndex * window.innerWidth,
-                            behavior: 'smooth'
-                        });
+                        updateFullScreenSlide(nextIndex);
                         loadSong(songs[nextIndex]);
                         audio.play();
                         isPlaying = true;
@@ -2781,10 +3048,7 @@
 
                     prevButton.onclick = () => {
                         const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-                        fullScreenContent.scrollTo({
-                            left: prevIndex * window.innerWidth,
-                            behavior: 'smooth'
-                        });
+                        updateFullScreenSlide(prevIndex);
                         loadSong(songs[prevIndex]);
                         audio.play();
                         isPlaying = true;
@@ -2801,8 +3065,8 @@
                     // Handle slide changes on scroll
                     fullScreenContent.onscroll = debounce(() => {
                         const currentSlide = Math.round(fullScreenContent.scrollLeft / window.innerWidth);
-                        if (currentSongIndex !== currentSlide) {
-                            currentSongIndex = currentSlide;
+                        if (currentSongIndex !== currentSlide && currentSlide >= 0 && currentSlide < songs.length) {
+                            updateFullScreenSlide(currentSlide);
                             loadSong(songs[currentSlide]);
                             audio.play();
                             isPlaying = true;
@@ -3230,39 +3494,37 @@
 
             // Update fullscreen player display
             function updateFullscreenPlayer() {
-                const fullscreenPlayer = document.querySelector('.fullscreen-player');
-                if (fullscreenPlayer.classList.contains('active')) {
-                    const albumArt = fullscreenPlayer.querySelector('.album-art');
-                    const songTitle = fullscreenPlayer.querySelector('.song-title');
-                    const songArtist = fullscreenPlayer.querySelector('.song-artist');
-                    
-                    albumArt.src = document.getElementById('current-album-art').src;
-                    songTitle.textContent = document.getElementById('current-song').textContent;
-                    songArtist.textContent = document.getElementById('current-artist').textContent;
+                const currentSong = songs[currentSongIndex];
+                const fullscreenImage = document.querySelector('.fullscreen-player .song-image img');
+                const fullscreenTitle = document.querySelector('.fullscreen-player .song-info h2');
+                const fullscreenArtist = document.querySelector('.fullscreen-player .song-info p');
+
+                if (fullscreenImage && currentSong) {
+                    fullscreenImage.src = currentSong.image;
+                    fullscreenImage.onload = () => {
+                        fullscreenImage.style.opacity = '1';
+                    };
+                }
+                if (fullscreenTitle) {
+                    fullscreenTitle.textContent = currentSong ? currentSong.title : '';
+                }
+                if (fullscreenArtist) {
+                    fullscreenArtist.textContent = currentSong ? currentSong.artist : '';
                 }
             }
 
-            // Update progress in fullscreen player
-            function updateFullscreenProgress() {
-                const fullscreenPlayer = document.querySelector('.fullscreen-player');
-                if (fullscreenPlayer.classList.contains('active')) {
-                    const progress = fullscreenPlayer.querySelector('.progress');
-                    const currentTime = fullscreenPlayer.querySelector('.current-time');
-                    const duration = fullscreenPlayer.querySelector('.duration');
-                    
-                    progress.style.width = (audio.currentTime / audio.duration) * 100 + '%';
-                    currentTime.textContent = formatTime(audio.currentTime);
-                    duration.textContent = formatTime(audio.duration);
-                }
-            }
-
-            // Add event listeners for fullscreen player
-            audio.addEventListener('timeupdate', updateFullscreenProgress);
+            // Add event listener for song ended
             audio.addEventListener('ended', () => {
-                const fullscreenPlayer = document.querySelector('.fullscreen-player');
-                if (fullscreenPlayer.classList.contains('active')) {
-                    const playPauseBtn = fullscreenPlayer.querySelector('.play-pause-btn i');
-                    playPauseBtn.className = 'fas fa-play';
+                if (currentSongIndex < songs.length - 1) {
+                    currentSongIndex++;
+                    loadSong(currentSongIndex);
+                    playSong();
+                    updateFullscreenPlayer(); // Update fullscreen player when song changes
+                } else if (isRepeatEnabled) {
+                    currentSongIndex = 0;
+                    loadSong(currentSongIndex);
+                    playSong();
+                    updateFullscreenPlayer(); // Update fullscreen player when repeating playlist
                 }
             });
 
@@ -3576,159 +3838,119 @@
         // Add function to show full view for a section
         function showFullView(section) {
             const sectionTitle = section.querySelector('h2').textContent;
-            const songs = JSON.parse(section.dataset.songs);
+            const category = section.querySelector('.slider-container').getAttribute('data-category');
+            const songs = songData[category];
+            let currentFullViewIndex = 0;
             
-            // Create full view container
             const fullView = document.createElement('div');
             fullView.className = 'full-view';
+            fullView.dataset.category = category;
             fullView.innerHTML = `
                 <div class="full-view-header">
                     <h2>${sectionTitle}</h2>
-                    <button class="close-btn" onclick="this.parentElement.parentElement.remove()">
+                    <button class="close-btn" onclick="closeFullView(this)">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="full-view-content">
-                    ${songs.map(song => `
-                        <div class="song-item" onclick="loadSong(${JSON.stringify(song).replace(/"/g, '&quot;')})">
-                            <img src="${song.albumArt}" alt="${song.title}">
+                    ${songs.map((song, index) => `
+                        <div class="song-item ${index === currentFullViewIndex ? 'active' : ''}" data-song-index="${index}">
+                            <img src="${song.cover}" alt="${song.title}">
                             <div class="song-info">
                                 <h3 class="song-title">${song.title}</h3>
                                 <p class="song-artist">${song.artist}</p>
                             </div>
                             <div class="play-button-overlay">
-                                <i class="fas fa-play"></i>
+                                <i class="fas fa-${index === currentFullViewIndex ? 'pause' : 'play'}"></i>
                             </div>
                         </div>
                     `).join('')}
                 </div>
             `;
-            
-            // Add styles for full view
-            const style = document.createElement('style');
-            style.textContent = `
-                .full-view {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: linear-gradient(135deg, #1a1a1a, #000000);
-                    z-index: 1000;
-                    padding: 20px;
-                    overflow-y: auto;
-                }
-                
-                .full-view-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 20px;
-                    padding-bottom: 10px;
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                }
-                
-                .full-view-header h2 {
-                    color: white;
-                    font-size: 1.5rem;
-                    margin: 0;
-                }
-                
-                .full-view-header .close-btn {
-                    background: none;
-                    border: none;
-                    color: white;
-                    font-size: 1.2rem;
-                    cursor: pointer;
-                    padding: 5px;
-                }
-                
-                .full-view-content {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                    gap: 20px;
-                    padding: 10px;
-                }
-                
-                @media (max-width: 768px) {
-                    .full-view-content {
-                        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                        gap: 15px;
-                    }
-                }
-                
-                @media (max-width: 576px) {
-                    .full-view-content {
-                        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                        gap: 10px;
-                    }
-                }
-            `;
-            
-            document.head.appendChild(style);
+
             document.body.appendChild(fullView);
+
+            // Add click event listeners to song items
+            const songItems = fullView.querySelectorAll('.song-item');
+            songItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const index = parseInt(item.dataset.songIndex);
+                    currentFullViewIndex = index;
+                    updateFullViewSong(songs, index, songItems);
+                });
+            });
+
+            // Handle automatic next song
+            audio.addEventListener('ended', function handleSongEnd() {
+                if (document.querySelector('.full-view')) {
+                    currentFullViewIndex = (currentFullViewIndex + 1) % songs.length;
+                    updateFullViewSong(songs, currentFullViewIndex, songItems);
+                }
+            });
+
+            // Remove event listener when closing full view
+            fullView.querySelector('.close-btn').addEventListener('click', () => {
+                audio.removeEventListener('ended', handleSongEnd);
+                fullView.remove();
+            });
         }
 
-        // Update the loadSongsForSection function to add "See More" button
-        function loadSongsForSection(section) {
-            const songList = section.querySelector('.song-list');
-            if (!songList) return;
-            
-            const songs = section.dataset.songs ? JSON.parse(section.dataset.songs) : [];
-            
-            // Clear existing content
-            songList.innerHTML = '';
-            
-            // Add "See More" section
-            const seeMoreSection = document.createElement('div');
-            seeMoreSection.className = 'see-more-section';
-            seeMoreSection.innerHTML = `
-                <div class="see-more-content">
-                    <i class="fas fa-chevron-right see-more-icon"></i>
-                    <div>See All</div>
-                </div>
-            `;
-            
-            seeMoreSection.addEventListener('click', () => {
-                const sliderContainer = section.querySelector('.slider-container');
-                sliderContainer.classList.add('expanded');
-                
-                // Add close button
-                const closeBtn = document.createElement('button');
-                closeBtn.className = 'close-btn';
-                closeBtn.innerHTML = '<i class="fas fa-times"></i>';
-                closeBtn.onclick = () => {
-                    sliderContainer.classList.remove('expanded');
-                    closeBtn.remove();
-                };
-                sliderContainer.appendChild(closeBtn);
+        function updateFullViewSong(songs, index, songItems) {
+            // Update active state and play buttons
+            songItems.forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+                const playButton = item.querySelector('.play-button-overlay i');
+                playButton.className = `fas fa-${i === index ? 'pause' : 'play'}`;
             });
-            
-            songList.appendChild(seeMoreSection);
-            
-            // Add songs
-            songs.forEach((song, index) => {
-                const songItem = document.createElement('div');
-                songItem.className = 'song-item';
-                songItem.dataset.songId = song.id;
-                songItem.innerHTML = `
-                    <img src="${song.albumArt}" alt="${song.title}">
-                    <div class="song-info">
-                        <h3 class="song-title">${song.title}</h3>
-                        <p class="song-artist">${song.artist}</p>
-                    </div>
-                    <div class="play-button-overlay">
-                        <i class="fas fa-play"></i>
-                    </div>
-                `;
-                
-                songItem.addEventListener('click', () => {
-                    loadSong(song);
-                });
-                
-                songList.appendChild(songItem);
-            });
+
+            // Load and play the song
+            const song = songs[index];
+            loadSong(song);
+            audio.play();
+            isPlaying = true;
+            updatePlayPauseButtons();
+
+            // Scroll the active song into view if needed
+            const activeItem = songItems[index];
+            if (activeItem) {
+                activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
+
+        // Update the loadSong function
+        let originalLoadSong = window.loadSong || function() {};
+        window.loadSong = function(song) {
+            // Call original loadSong functionality
+            originalLoadSong(song);
+            
+            // Update document elements
+            document.getElementById('current-song').textContent = song.title;
+            document.getElementById('current-artist').textContent = song.artist;
+            document.getElementById('current-album-art').src = song.cover;
+            audio.src = song.audio;
+
+            // Update full view if it exists
+            const fullView = document.querySelector('.full-view');
+            if (fullView) {
+                const songItems = fullView.querySelectorAll('.song-item');
+                songItems.forEach((item, index) => {
+                    const currentSong = songData[fullView.dataset.category][index];
+                    if (currentSong.title === song.title) {
+                        item.classList.add('active');
+                        const playButton = item.querySelector('.play-button-overlay i');
+                        if (playButton) {
+                            playButton.className = 'fas fa-pause';
+                        }
+                    } else {
+                        item.classList.remove('active');
+                        const playButton = item.querySelector('.play-button-overlay i');
+                        if (playButton) {
+                            playButton.className = 'fas fa-play';
+                        }
+                    }
+                });
+            }
+        };
 
         // Request notification permission when the app starts
         document.addEventListener('DOMContentLoaded', async () => {

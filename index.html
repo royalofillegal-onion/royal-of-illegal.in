@@ -3838,119 +3838,159 @@
         // Add function to show full view for a section
         function showFullView(section) {
             const sectionTitle = section.querySelector('h2').textContent;
-            const category = section.querySelector('.slider-container').getAttribute('data-category');
-            const songs = songData[category];
-            let currentFullViewIndex = 0;
+            const songs = JSON.parse(section.dataset.songs);
             
+            // Create full view container
             const fullView = document.createElement('div');
             fullView.className = 'full-view';
-            fullView.dataset.category = category;
             fullView.innerHTML = `
                 <div class="full-view-header">
                     <h2>${sectionTitle}</h2>
-                    <button class="close-btn" onclick="closeFullView(this)">
+                    <button class="close-btn" onclick="this.parentElement.parentElement.remove()">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="full-view-content">
-                    ${songs.map((song, index) => `
-                        <div class="song-item ${index === currentFullViewIndex ? 'active' : ''}" data-song-index="${index}">
-                            <img src="${song.cover}" alt="${song.title}">
+                    ${songs.map(song => `
+                        <div class="song-item" onclick="loadSong(${JSON.stringify(song).replace(/"/g, '&quot;')})">
+                            <img src="${song.albumArt}" alt="${song.title}">
                             <div class="song-info">
                                 <h3 class="song-title">${song.title}</h3>
                                 <p class="song-artist">${song.artist}</p>
                             </div>
                             <div class="play-button-overlay">
-                                <i class="fas fa-${index === currentFullViewIndex ? 'pause' : 'play'}"></i>
+                                <i class="fas fa-play"></i>
                             </div>
                         </div>
                     `).join('')}
                 </div>
             `;
-
-            document.body.appendChild(fullView);
-
-            // Add click event listeners to song items
-            const songItems = fullView.querySelectorAll('.song-item');
-            songItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    const index = parseInt(item.dataset.songIndex);
-                    currentFullViewIndex = index;
-                    updateFullViewSong(songs, index, songItems);
-                });
-            });
-
-            // Handle automatic next song
-            audio.addEventListener('ended', function handleSongEnd() {
-                if (document.querySelector('.full-view')) {
-                    currentFullViewIndex = (currentFullViewIndex + 1) % songs.length;
-                    updateFullViewSong(songs, currentFullViewIndex, songItems);
-                }
-            });
-
-            // Remove event listener when closing full view
-            fullView.querySelector('.close-btn').addEventListener('click', () => {
-                audio.removeEventListener('ended', handleSongEnd);
-                fullView.remove();
-            });
-        }
-
-        function updateFullViewSong(songs, index, songItems) {
-            // Update active state and play buttons
-            songItems.forEach((item, i) => {
-                item.classList.toggle('active', i === index);
-                const playButton = item.querySelector('.play-button-overlay i');
-                playButton.className = `fas fa-${i === index ? 'pause' : 'play'}`;
-            });
-
-            // Load and play the song
-            const song = songs[index];
-            loadSong(song);
-            audio.play();
-            isPlaying = true;
-            updatePlayPauseButtons();
-
-            // Scroll the active song into view if needed
-            const activeItem = songItems[index];
-            if (activeItem) {
-                activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-        }
-
-        // Update the loadSong function
-        let originalLoadSong = window.loadSong || function() {};
-        window.loadSong = function(song) {
-            // Call original loadSong functionality
-            originalLoadSong(song);
             
-            // Update document elements
-            document.getElementById('current-song').textContent = song.title;
-            document.getElementById('current-artist').textContent = song.artist;
-            document.getElementById('current-album-art').src = song.cover;
-            audio.src = song.audio;
-
-            // Update full view if it exists
-            const fullView = document.querySelector('.full-view');
-            if (fullView) {
-                const songItems = fullView.querySelectorAll('.song-item');
-                songItems.forEach((item, index) => {
-                    const currentSong = songData[fullView.dataset.category][index];
-                    if (currentSong.title === song.title) {
-                        item.classList.add('active');
-                        const playButton = item.querySelector('.play-button-overlay i');
-                        if (playButton) {
-                            playButton.className = 'fas fa-pause';
-                        }
-                    } else {
-                        item.classList.remove('active');
-                        const playButton = item.querySelector('.play-button-overlay i');
-                        if (playButton) {
-                            playButton.className = 'fas fa-play';
-                        }
+            // Add styles for full view
+            const style = document.createElement('style');
+            style.textContent = `
+                .full-view {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(135deg, #1a1a1a, #000000);
+                    z-index: 1000;
+                    padding: 20px;
+                    overflow-y: auto;
+                }
+                
+                .full-view-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+                    padding-bottom: 10px;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                }
+                
+                .full-view-header h2 {
+                    color: white;
+                    font-size: 1.5rem;
+                    margin: 0;
+                }
+                
+                .full-view-header .close-btn {
+                    background: none;
+                    border: none;
+                    color: white;
+                    font-size: 1.2rem;
+                    cursor: pointer;
+                    padding: 5px;
+                }
+                
+                .full-view-content {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                    gap: 20px;
+                    padding: 10px;
+                }
+                
+                @media (max-width: 768px) {
+                    .full-view-content {
+                        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                        gap: 15px;
                     }
+                }
+                
+                @media (max-width: 576px) {
+                    .full-view-content {
+                        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                        gap: 10px;
+                    }
+                }
+            `;
+            
+            document.head.appendChild(style);
+            document.body.appendChild(fullView);
+        }
+
+        // Update the loadSongsForSection function to add "See More" button
+        function loadSongsForSection(section) {
+            const songList = section.querySelector('.song-list');
+            if (!songList) return;
+            
+            const songs = section.dataset.songs ? JSON.parse(section.dataset.songs) : [];
+            
+            // Clear existing content
+            songList.innerHTML = '';
+            
+            // Add "See More" section
+            const seeMoreSection = document.createElement('div');
+            seeMoreSection.className = 'see-more-section';
+            seeMoreSection.innerHTML = `
+                <div class="see-more-content">
+                    <i class="fas fa-chevron-right see-more-icon"></i>
+                    <div>See All</div>
+                </div>
+            `;
+            
+            seeMoreSection.addEventListener('click', () => {
+                const sliderContainer = section.querySelector('.slider-container');
+                sliderContainer.classList.add('expanded');
+                
+                // Add close button
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'close-btn';
+                closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                closeBtn.onclick = () => {
+                    sliderContainer.classList.remove('expanded');
+                    closeBtn.remove();
+                };
+                sliderContainer.appendChild(closeBtn);
+            });
+            
+            songList.appendChild(seeMoreSection);
+            
+            // Add songs
+            songs.forEach((song, index) => {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+                songItem.dataset.songId = song.id;
+                songItem.innerHTML = `
+                    <img src="${song.albumArt}" alt="${song.title}">
+                    <div class="song-info">
+                        <h3 class="song-title">${song.title}</h3>
+                        <p class="song-artist">${song.artist}</p>
+                    </div>
+                    <div class="play-button-overlay">
+                        <i class="fas fa-play"></i>
+                    </div>
+                `;
+                
+                songItem.addEventListener('click', () => {
+                    loadSong(song);
                 });
-            }
-        };
+                
+                songList.appendChild(songItem);
+            });
+        }
 
         // Request notification permission when the app starts
         document.addEventListener('DOMContentLoaded', async () => {

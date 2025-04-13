@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RoyalStar Music</title>
     <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dykzuljjr/image/upload/v1743437143/IMG_20250331_112437_oc200m.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -1813,6 +1814,8 @@
             align-items: center;
             justify-content: center;
             padding: 2rem;
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
         }
 
         .fullscreen-player.active {
@@ -2545,21 +2548,44 @@
             width: 60%;
             height: 100%;
             position: relative;
-            display: flex;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .banner-image img {
-            width: 33.33%;
+            width: 100%;
             height: 100%;
-            object-fit: cover;
-            transition: all 0.5s ease;
-            filter: brightness(0.9);
+            object-fit: contain;
+            transition: transform 0.5s ease;
+            max-height: 100%;
+            max-width: 100%;
         }
 
-        .banner-image img:hover {
-            filter: brightness(1);
-            transform: scale(1.05);
+        @media (min-width: 1200px) {
+            .banner-image img {
+                object-fit: cover;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .banner-image img {
+                object-fit: contain;
+                max-height: 90%;
+                width: auto;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .banner-image {
+                width: 100%;
+                height: 60%;
+            }
+            .banner-image img {
+                max-width: 90%;
+                height: auto;
+            }
         }
 
         .banner-content {
@@ -2770,21 +2796,44 @@
             width: 60%;
             height: 100%;
             position: relative;
-            display: flex;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .banner-image img {
-            width: 33.33%;
+            width: 100%;
             height: 100%;
-            object-fit: cover;
-            transition: all 0.5s ease;
-            filter: brightness(0.9);
+            object-fit: contain;
+            transition: transform 0.5s ease;
+            max-height: 100%;
+            max-width: 100%;
         }
 
-        .banner-image img:hover {
-            filter: brightness(1);
-            transform: scale(1.05);
+        @media (min-width: 1200px) {
+            .banner-image img {
+                object-fit: cover;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .banner-image img {
+                object-fit: contain;
+                max-height: 90%;
+                width: auto;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .banner-image {
+                width: 100%;
+                height: 60%;
+            }
+            .banner-image img {
+                max-width: 90%;
+                height: auto;
+            }
         }
 
         .banner-content {
@@ -3037,7 +3086,7 @@
     <div class="full-screen-slider">
         <div class="full-screen-header">
             <h2>Now Playing</h2>
-            <button class="close-full-screen">
+            <button class="close-full-screen" title="Close fullscreen view" aria-label="Close fullscreen view">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -3047,9 +3096,15 @@
                 <div class="progress"></div>
             </div>
             <div class="full-screen-buttons">
-                <button id="full-screen-prev"><i class="fas fa-step-backward"></i></button>
-                <button id="full-screen-play-pause"><i class="fas fa-play"></i></button>
-                <button id="full-screen-next"><i class="fas fa-step-forward"></i></button>
+                <button id="full-screen-prev" title="Previous track" aria-label="Play previous track">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button id="full-screen-play-pause" title="Play or pause track" aria-label="Play or pause track">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button id="full-screen-next" title="Next track" aria-label="Play next track">
+                    <i class="fas fa-step-forward"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -3074,7 +3129,7 @@
                 <textarea id="feedbackText" name="feedback" placeholder="Share your thoughts with us..." required></textarea>
             </div>
             <div class="input-group">
-                <select id="feedbackRating" name="rating" required>
+                <select id="feedbackRating" name="rating" required title="Rate your experience" aria-label="Rate your experience">
                     <option value="">How would you Like This?</option>
                     <option value="5">Improve</option>
                     <option value="4">Better</option>
@@ -5194,8 +5249,8 @@
 
             slidesWrapper.style.transition = 'transform 0.5s ease';
         });
-
-        // Add this inside your existing <script> tag
+    </script>
+        <script>
         const initBannerSlider = () => {
             const slidesWrapper = document.querySelector('.banner-slides-wrapper');
             const slides = document.querySelectorAll('.banner-slide');
@@ -5240,7 +5295,7 @@
             });
 
             // Start automatic sliding
-            window.bannerInterval = setInterval(nextSlide, 1000);
+            window.bannerInterval = setInterval(nextSlide, 3000);
 
             // Show first slide
             showSlide(0);

@@ -3428,6 +3428,38 @@
                 min-height: 150px;
             }
         }
+
+        /* Add inside the <style> tag */
+
+        .banner-container {
+            width: 100%;
+            height: 50vh;
+            max-height: 500px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .banner-container {
+                height: 300px;
+                max-height: 40vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .banner-container {
+                height: 250px;
+                max-height: 35vh;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .banner-container {
+                height: 200px;
+                max-height: 30vh;
+            }
+        }
     </style>
 </head>
 <body>
@@ -5597,6 +5629,24 @@
 
             // Start auto-sliding immediately
             startAutoSlide();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const slidesWrapper = document.querySelector('.banner-slides-wrapper');
+            const slides = document.querySelectorAll('.banner-slide');
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+
+            function updateSlider() {
+                slidesWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+            }
+
+            setInterval(() => {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                updateSlider();
+            }, 1000);
+
+            slidesWrapper.style.transition = 'transform 0.5s ease';
         });
     </script>
 </body>

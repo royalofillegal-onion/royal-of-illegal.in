@@ -6,7 +6,225 @@
     <title>RoyalStar Music</title>
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Advanced Protection Scripts -->
+    <script>
+        (function() {
+            let countdownTimer;
+            let remainingTime = 2; // 2 seconds countdown
+
+            // Create warning overlay
+            function createWarningOverlay() {
+                const overlay = document.createElement('div');
+                overlay.id = 'devtools-warning';
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.95);
+                    color: #ff0000;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 24px;
+                    font-family: monospace;
+                    z-index: 999999;
+                    text-align: center;
+                `;
+                
+                const warningText = document.createElement('div');
+                warningText.innerHTML = `
+                    ⚠️ UNAUTHORIZED ACCESS DETECTED ⚠️<br>
+                    Developer Tools are not allowed<br>
+                    Page will self-destruct in:<br>
+                    <span id="countdown">${remainingTime}</span> seconds
+                `;
+                
+                overlay.appendChild(warningText);
+                document.body.appendChild(overlay);
+                
+                return overlay;
+            }
+
+            // Update countdown timer
+            function updateCountdown() {
+                const countdownElement = document.getElementById('countdown');
+                if (countdownElement) {
+                    countdownElement.textContent = remainingTime;
+                }
+            }
+
+            // Start countdown
+            function startCountdown() {
+                if (countdownTimer) {
+                    clearInterval(countdownTimer);
+                }
+                
+                remainingTime = 2;
+                const overlay = createWarningOverlay();
+                
+                countdownTimer = setInterval(() => {
+                    remainingTime--;
+                    updateCountdown();
+                    
+                    if (remainingTime <= 0) {
+                        clearInterval(countdownTimer);
+                        // Convert page content to hashes before redirect
+                        document.documentElement.innerHTML = Array.from(document.documentElement.innerHTML)
+                            .map(char => char.charCodeAt(0).toString(16))
+                            .join('');
+                        setTimeout(() => {
+                            window.location.href = "about:blank";
+                        }, 500);
+                    }
+                }, 1000);
+            }
+
+            // Advanced DevTools Detection
+            const devToolsDetector = {
+                isOpen: false,
+                orientation: undefined,
+                
+                init: function() {
+                    this.detectDevTools();
+                    this.hookConsole();
+                    this.protectSource();
+                    this.addDebugProtect();
+                },
+
+                detectDevTools: function() {
+                    const threshold = 160;
+                    const checkDevTools = () => {
+                        const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+                        const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+                        if(widthThreshold || heightThreshold) {
+                            this.takeAction();
+                        }
+                    };
+
+                    // Check for DevTools using multiple methods
+                    setInterval(checkDevTools, 1000);
+                    window.addEventListener('resize', checkDevTools);
+                    window.addEventListener('devtoolschange', e => {
+                        if(e.detail.isOpen) {
+                            this.takeAction();
+                        }
+                    });
+
+                    // Additional detection method
+                    let element = new Image();
+                    Object.defineProperty(element, 'id', {
+                        get: function() {
+                            this.takeAction();
+                        }
+                    });
+                    console.dir(element);
+                },
+
+                takeAction: function() {
+                    if (!document.getElementById('devtools-warning')) {
+                        startCountdown();
+                        this.scrambleContent();
+                    }
+                },
+
+                scrambleContent: function() {
+                    // Convert visible content to hashes while keeping functionality
+                    const elements = document.querySelectorAll('*:not(#devtools-warning, #devtools-warning *)');
+                    elements.forEach(element => {
+                        if (element.childNodes.length === 1 && element.childNodes[0].nodeType === 3) {
+                            const text = element.textContent;
+                            element.setAttribute('data-original', text);
+                            element.textContent = this.generateHash(text);
+                        }
+                    });
+                },
+
+                generateHash: function(str) {
+                    let hash = 0;
+                    for (let i = 0; i < str.length; i++) {
+                        const char = str.charCodeAt(i);
+                        hash = ((hash << 5) - hash) + char;
+                        hash = hash & hash;
+                    }
+                    return hash.toString(36);
+                }
+            };
+
+            // Initialize protection
+            window.addEventListener('load', function() {
+                devToolsDetector.init();
+            });
+
+            // Keyboard shortcuts protection
+            document.addEventListener('keydown', function(e) {
+                if (
+                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                    (e.ctrlKey && e.key === 'U') ||
+                    e.key === 'F12'
+                ) {
+                    e.preventDefault();
+                    devToolsDetector.takeAction();
+                    return false;
+                }
+            });
+
+            // Right-click protection
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+        })();
+    </script>
+
     <style>
+        /* Anti-inspection CSS */
+        body * {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+        }
+        
+        /* Hide elements when inspected */
+        *:hover {
+            outline: none !important;
+        }
+        
+        /* Prevent element highlighting */
+        ::selection {
+            background: transparent !important;
+            color: inherit !important;
+        }
+        
+        /* Additional protection for Safari */
+        @media screen and (-webkit-min-device-pixel-ratio:0) {
+            body * {
+                outline: none !important;
+                -webkit-touch-callout: none !important;
+            }
+        }
+
+        /* Disable text selection */
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Hide source code when viewed */
+        body {
+            visibility: visible !important;
+        }
+
+        body * {
+            visibility: visible !important;
+        }
+
         * {
             margin: 0;
             padding: 0;

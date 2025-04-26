@@ -4711,40 +4711,6 @@ nav ul {
             // ... rest of existing code ...
         }
     </script>
-    <!-- Firebase SDKs (include in head or before this script) -->
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js"></script>
-
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAaQDKLlmT3zYC5ww3rxiul_FB7HfviZUA",
-    authDomain: "royalstar-d6a4e.firebaseapp.com",
-    projectId: "royalstar-d6a4e",
-    storageBucket: "royalstar-d6a4e.appspot.com",
-    messagingSenderId: "796910377639",
-    appId: "1:796910377639:web:f8de8945e558fb9868d982"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-
-  // Redirect if not logged in
-  auth.onAuthStateChanged(user => {
-    if (!user) {
-      window.location.replace("index.html");
-    }
-  });
-
-  // Logout functionality
-  window.addEventListener("DOMContentLoaded", () => {
-    const logoutBtn = document.getElementById("logoutBtn");
-    logoutBtn.addEventListener("click", () => {
-      auth.signOut().then(() => {
-        window.location.replace("index.html");
-      });
-    });
-  });
-</script>
 <script>
     if ('mediaSession' in navigator) {
   navigator.mediaSession.metadata = new MediaMetadata({
